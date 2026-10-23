@@ -1,4 +1,4 @@
-package model;
+package com.example.studentregistrationsystem.model;
 
 public class Course {
 
@@ -7,6 +7,10 @@ public class Course {
     private double fee;
     private int capacity;
     private int enrolledStudents;
+
+    public Course() {
+
+    }
 
     public Course(String courseId,
                   String courseName,

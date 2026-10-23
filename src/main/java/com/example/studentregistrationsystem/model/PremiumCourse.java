@@ -1,6 +1,10 @@
-package model;
+package com.example.studentregistrationsystem.model;
 
 public class PremiumCourse extends Course {
+
+    public PremiumCourse() {
+
+    }
 
     public PremiumCourse(
             String courseId,

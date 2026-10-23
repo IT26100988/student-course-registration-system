@@ -1,7 +1,7 @@
-package service;
+package com.example.studentregistrationsystem.service;
 
-import model.Course;
-import repository.CourseRepository;
+import com.example.studentregistrationsystem.model.Course;
+import com.example.studentregistrationsystem.repository.CourseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,6 @@ public class CourseCatalogService {
                 repository.getAllCourses()) {
 
             if (course.isAvailable()) {
-
                 available.add(course);
             }
         }

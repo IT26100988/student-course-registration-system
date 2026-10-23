@@ -1,6 +1,10 @@
-package model;
+package com.example.studentregistrationsystem.model;
 
 public class StandardCourse extends Course {
+
+    public StandardCourse() {
+
+    }
 
     public StandardCourse(
             String courseId,

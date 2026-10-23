@@ -1,6 +1,7 @@
-package repository;
+package com.example.studentregistrationsystem.repository;
 
-import model.Course;
+import com.example.studentregistrationsystem.model.Course;
+
 import java.util.List;
 
 public interface CourseRepository {

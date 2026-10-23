@@ -1,6 +1,6 @@
-package repository;
+package com.example.studentregistrationsystem.repository;
 
-import model.Course;
+import com.example.studentregistrationsystem.model.Course;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -88,48 +88,24 @@ public class TxtCourseRepository implements CourseRepository {
 
         List<Course> courses = getAllCourses();
 
-        boolean found = false;
+        boolean removed =
+                courses.removeIf(course ->
+                        course.getCourseId()
+                                .equalsIgnoreCase(courseId));
 
-        courses.removeIf(course -> {
-
-            if (course.getCourseId()
-                    .equalsIgnoreCase(courseId)) {
-
-                return true;
-            }
-            return false;
-        });
-
-        try (BufferedWriter writer =
-                     new BufferedWriter(
-                             new FileWriter(FILE_PATH))) {
-
-            for (Course course : courses) {
-
-                writer.write(
-                        course.getCourseId() + "," +
-                                course.getCourseName() + "," +
-                                course.getFee() + "," +
-                                course.getCapacity() + "," +
-                                course.getEnrolledStudents()
-                );
-
-                writer.newLine();
-            }
-
-            found = true;
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (removed) {
+            saveAllCourses(courses);
         }
 
-        return found;
+        return removed;
     }
 
     @Override
-    public boolean updateCourse(Course updatedCourse) {
+    public boolean updateCourse(
+            Course updatedCourse) {
 
-        List<Course> courses = getAllCourses();
+        List<Course> courses =
+                getAllCourses();
 
         boolean found = false;
 
@@ -148,29 +124,36 @@ public class TxtCourseRepository implements CourseRepository {
         }
 
         if (found) {
-
-            try (BufferedWriter writer =
-                         new BufferedWriter(
-                                 new FileWriter(FILE_PATH))) {
-
-                for (Course course : courses) {
-
-                    writer.write(
-                            course.getCourseId() + "," +
-                                    course.getCourseName() + "," +
-                                    course.getFee() + "," +
-                                    course.getCapacity() + "," +
-                                    course.getEnrolledStudents()
-                    );
-
-                    writer.newLine();
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            saveAllCourses(courses);
         }
 
         return found;
+    }
+
+    private void saveAllCourses(
+            List<Course> courses) {
+
+        try (
+                BufferedWriter writer =
+                        new BufferedWriter(
+                                new FileWriter(FILE_PATH))
+        ) {
+
+            for (Course course : courses) {
+
+                writer.write(
+                        course.getCourseId() + "," +
+                                course.getCourseName() + "," +
+                                course.getFee() + "," +
+                                course.getCapacity() + "," +
+                                course.getEnrolledStudents()
+                );
+
+                writer.newLine();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Management</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            margin:40px;
+        }
+
+        table{
+            width:100%;
+            border-collapse: collapse;
+        }
+
+        th,td{
+            border:1px solid black;
+            padding:10px;
+        }
+
+        th{
+            background:#e5e5e5;
+        }
+
+        button{
+            padding:5px 10px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<h1>Course Management</h1>
+
+<table id="courseTable">
+
+    <thead>
+
+    <tr>
+
+        <th>ID</th>
+        <th>Name</th>
+        <th>Fee</th>
+        <th>Capacity</th>
+        <th>Enrolled</th>
+
+    </tr>
+
+    </thead>
+
+    <tbody>
+
+    </tbody>
+
+</table>
+
+<script>
+
+    fetch('/api/courses')
+        .then(response => response.json())
+        .then(data => {
+
+            let tableBody =
+                document.querySelector("#courseTable tbody");
+
+            data.forEach(course => {
+
+                let row = `
+        <tr>
+            <td>${course.courseId}</td>
+            <td>${course.courseName}</td>
+            <td>${course.fee}</td>
+            <td>${course.capacity}</td>
+            <td>${course.enrolledStudents}</td>
+        </tr>
+        `;
+
+                tableBody.innerHTML += row;
+
+            });
+
+        });
+
+</script>
+
+</body>
+</html>
