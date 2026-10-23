@@ -2,17 +2,14 @@ package repository;
 
 import model.Course;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TxtCourseRepository implements CourseRepository {
 
-    private static final String FILE_PATH = "data/courses.txt";
+    private static final String FILE_PATH =
+            "data/courses.txt";
 
     @Override
     public void addCourse(Course course) {
@@ -80,15 +77,63 @@ public class TxtCourseRepository implements CourseRepository {
     @Override
     public Course findById(String courseId) {
 
-        List<Course> courses = getAllCourses();
+        for (Course course : getAllCourses()) {
 
-        for (Course course : courses) {
+            if (course.getCourseId()
+                    .equalsIgnoreCase(courseId)) {
 
-            if (course.getCourseId().equalsIgnoreCase(courseId)) {
                 return course;
             }
         }
 
         return null;
+    }
+
+    @Override
+    public boolean deleteCourse(String courseId) {
+
+        List<Course> courses =
+                getAllCourses();
+
+        boolean found = false;
+
+        for (Course course : courses) {
+
+            if (course.getCourseId()
+                    .equalsIgnoreCase(courseId)) {
+
+                courses.remove(course);
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+
+            try (
+                    BufferedWriter writer =
+                            new BufferedWriter(
+                                    new FileWriter(FILE_PATH))
+            ) {
+
+                for (Course course : courses) {
+
+                    writer.write(
+                            course.getCourseId() + "," +
+                                    course.getCourseName() + "," +
+                                    course.getFee() + "," +
+                                    course.getCapacity() + "," +
+                                    course.getEnrolledStudents()
+                    );
+
+                    writer.newLine();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return found;
     }
 }

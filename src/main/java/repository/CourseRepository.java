@@ -10,4 +10,6 @@ public interface CourseRepository {
     List<Course> getAllCourses();
 
     Course findById(String courseId);
+
+    boolean deleteCourse(String courseId);
 }

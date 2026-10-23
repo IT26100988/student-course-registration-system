@@ -8,12 +8,11 @@ public class Course {
     private int capacity;
     private int enrolledStudents;
 
-    public Course(
-            String courseId,
-            String courseName,
-            double fee,
-            int capacity,
-            int enrolledStudents) {
+    public Course(String courseId,
+                  String courseName,
+                  double fee,
+                  int capacity,
+                  int enrolledStudents) {
 
         this.courseId = courseId;
         this.courseName = courseName;
@@ -40,5 +39,9 @@ public class Course {
 
     public int getEnrolledStudents() {
         return enrolledStudents;
+    }
+
+    public boolean isAvailable() {
+        return enrolledStudents < capacity;
     }
 }

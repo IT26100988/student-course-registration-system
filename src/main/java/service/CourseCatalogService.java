@@ -9,7 +9,9 @@ public class CourseCatalogService {
 
     private final CourseRepository repository;
 
-    public CourseCatalogService(CourseRepository repository) {
+    public CourseCatalogService(
+            CourseRepository repository) {
+
         this.repository = repository;
     }
 
@@ -21,7 +23,15 @@ public class CourseCatalogService {
         return repository.getAllCourses();
     }
 
-    public Course findCourseById(String courseId) {
+    public Course findCourseById(
+            String courseId) {
+
         return repository.findById(courseId);
+    }
+
+    public boolean deleteCourse(
+            String courseId) {
+
+        return repository.deleteCourse(courseId);
     }
 }

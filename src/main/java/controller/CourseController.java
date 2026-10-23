@@ -13,46 +13,59 @@ public class CourseController {
                         new TxtCourseRepository()
                 );
 
-        Course course =
-                new Course(
-                        "C005",
-                        "Spring Boot",
-                        40000,
-                        25,
-                        8
-                );
+        System.out.println(
+                "========== ALL COURSES =========="
+        );
 
-        service.addCourse(course);
-
-        System.out.println("Course Saved Successfully!");
-
-        System.out.println("\nAll Courses");
-
-        for (Course c : service.getAllCourses()) {
+        for (Course c :
+                service.getAllCourses()) {
 
             System.out.println(
-                    c.getCourseId() + " | " +
-                            c.getCourseName() + " | " +
+                    c.getCourseId() +
+                            " | " +
+                            c.getCourseName() +
+                            " | Fee: " +
                             c.getFee()
             );
         }
 
-        System.out.println("\nSearch Result");
+        System.out.println(
+                "\n========== SEARCH =========="
+        );
 
-        Course foundCourse =
+        Course course =
                 service.findCourseById("C002");
 
-        if (foundCourse != null) {
+        if (course != null) {
 
             System.out.println(
-                    foundCourse.getCourseId() + " | " +
-                            foundCourse.getCourseName() + " | " +
-                            foundCourse.getFee()
+                    course.getCourseName()
             );
-
-        } else {
-
-            System.out.println("Course Not Found!");
         }
+
+        System.out.println(
+                "\n========== AVAILABILITY =========="
+        );
+
+        for (Course c :
+                service.getAllCourses()) {
+
+            System.out.println(
+                    c.getCourseName()
+                            + " -> "
+                            + c.isAvailable()
+            );
+        }
+
+        System.out.println(
+                "\n========== DELETE =========="
+        );
+
+        boolean deleted =
+                service.deleteCourse("C004");
+
+        System.out.println(
+                "Deleted : " + deleted
+        );
     }
 }
