@@ -1,257 +1,1718 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Course Management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#172554">
+    <title>UniPortal | Course Management</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
-
-        body{
-            font-family: Arial;
-            margin:40px;
+        :root {
+            --primary: #5145e5;
+            --primary-dark: #392db8;
+            --purple: #8376ff;
+            --navy: #172554;
+            --muted: #64748b;
+            --border: #e4e9f5;
+            --danger: #e54865;
+            --success: #059669;
+            --glass: rgba(255, 255, 255, 0.91);
+            --shadow: 0 20px 55px rgba(18, 35, 85, .17);
+            --radius: 20px;
         }
 
-        input{
-            padding:8px;
-            margin:5px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        button{
-            padding:8px 12px;
-            cursor:pointer;
+        body {
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--navy);
+            background:
+                    linear-gradient(
+                            120deg,
+                            rgba(12, 25, 58, .60),
+                            rgba(37, 36, 105, .32),
+                            rgba(14, 32, 64, .46)
+                    ),
+                    url('https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=2000&q=85')
+                    center / cover fixed no-repeat;
         }
 
-        .delete-btn{
-            background:red;
-            color:white;
-            border:none;
+        button, input {
+            font: inherit;
         }
 
-        table{
-            width:100%;
+        button {
+            cursor: pointer;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: .65;
+        }
+
+        button:focus-visible, input:focus-visible {
+            outline: 3px solid rgba(99, 102, 241, .35);
+            outline-offset: 2px;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(15, 29, 65, .86);
+            border-bottom: 1px solid rgba(255,255,255,.12);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .nav-inner {
+            max-width: 1440px;
+            margin: auto;
+            min-height: 76px;
+            padding: 12px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #8b82ff, #4f46e5);
+            box-shadow: 0 7px 20px #4f46e555;
+            font-size: 23px;
+        }
+
+        .brand-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            margin-top: 2px;
+            color: #c7d2fe;
+            font-size: .69rem;
+            font-weight: 500;
+        }
+
+        .nav-tag {
+            color: #e0e7ff;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: .86rem;
+            font-weight: 600;
+        }
+
+        .nav-tag i {
+            color: #a5b4fc;
+        }
+
+        .page {
+            width: min(1280px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 35px 0 55px;
+        }
+
+        .hero {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            color: white;
+            margin: 4px 0 27px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            font-size: .76rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #dbeafe;
+            text-transform: uppercase;
+        }
+
+        .eyebrow i {
+            color: #c4b5fd;
+        }
+
+        .hero h1 {
+            margin-top: 11px;
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.2;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            text-shadow: 0 3px 18px #0003;
+        }
+
+        .hero p {
+            margin-top: 10px;
+            color: rgba(255,255,255,.87);
+            font-size: .94rem;
+            line-height: 1.8;
+        }
+
+        .hero-pill {
+            padding: 11px 15px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            border: 1px solid #ffffff45;
+            border-radius: 30px;
+            background: #ffffff1a;
+            color: white;
+            font-size: .78rem;
+            font-weight: 700;
+            white-space: nowrap;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-pill i {
+            color: #c4b5fd;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 17px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: var(--glass);
+            border: 1px solid #ffffffb8;
+            border-radius: 17px;
+            box-shadow: 0 10px 30px #101c4320;
+            backdrop-filter: blur(14px);
+        }
+
+        .stat-icon {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 15px;
+            font-size: 1.15rem;
+        }
+
+        .stat-icon.purple {
+            background: #eeebff;
+            color: #5b4bdf;
+        }
+
+        .stat-icon.blue {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .stat-icon.green {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            display: block;
+            margin-top: 5px;
+            font-size: 1.55rem;
+            line-height: 1.2;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.45fr 1fr;
+            gap: 22px;
+            align-items: stretch;
+        }
+
+        .card {
+            min-width: 0;
+            border-radius: var(--radius);
+            border: 1px solid #ffffffcf;
+            background: var(--glass);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .card-inner {
+            padding: 25px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding-bottom: 20px;
+            margin-bottom: 21px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            color: white;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #7770ff, #4937d9);
+            box-shadow: 0 5px 14px #5145e532;
+        }
+
+        .section-heading h2 {
+            font-size: 1.08rem;
+            font-weight: 800;
+            letter-spacing: -.3px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: .75rem;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 17px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #405476;
+            font-size: .79rem;
+            font-weight: 800;
+        }
+
+        .field label i {
+            color: #7184b0;
+            font-size: .78rem;
+        }
+
+        .field input, .search-input {
+            width: 100%;
+            min-width: 0;
+            height: 45px;
+            padding: 0 13px;
+            color: var(--navy);
+            border: 1px solid #d6dfef;
+            border-radius: 10px;
+            background: rgba(255,255,255,.86);
+            outline: none;
+            font-size: .83rem;
+            transition: border-color .2s, box-shadow .2s, background .2s;
+        }
+
+        .field input::placeholder, .search-input::placeholder {
+            color: #8a9bb8;
+        }
+
+        .field input:focus, .search-input:focus {
+            background: white;
+            border-color: #7770ff;
+            box-shadow: 0 0 0 4px #5145e514;
+        }
+
+        .btn {
+            min-height: 43px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 11px 17px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-size: .82rem;
+            font-weight: 800;
+            transition: transform .18s, box-shadow .18s, background .18s;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            color: white;
+            background: linear-gradient(110deg, #665bf3, #4433d3);
+            box-shadow: 0 6px 15px #5145e52c;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 0 9px 22px #5145e543;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 10px;
+            margin-top: 3px;
+        }
+
+        .form-actions .btn-primary {
+            flex: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .mode-banner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 13px;
+            margin-bottom: 17px;
+            border: 1px solid #c7d2fe;
+            border-radius: 10px;
+            color: #4338ca;
+            background: #eef2ff;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: stretch;
+            gap: 9px;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-wrap > i {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            transform: translateY(-50%);
+            color: #8293b2;
+            font-size: .85rem;
+        }
+
+        .search-input {
+            padding-left: 37px;
+        }
+
+        .search-button {
+            width: 49px;
+            padding: 10px;
+            flex-shrink: 0;
+        }
+
+        .search-placeholder {
+            min-height: 230px;
+            margin-top: 22px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 12px;
+            border: 1px dashed #d4dcef;
+            border-radius: 15px;
+            color: var(--muted);
+        }
+
+        .placeholder-icon {
+            display: grid;
+            place-items: center;
+            width: 75px;
+            height: 75px;
+            margin-bottom: 3px;
+            border-radius: 25px;
+            color: #6156e9;
+            background: linear-gradient(135deg, #eeebff, #dbeafe);
+            font-size: 1.8rem;
+        }
+
+        .search-placeholder strong {
+            color: #334b72;
+            font-size: .91rem;
+        }
+
+        .search-placeholder p {
+            max-width: 260px;
+            font-size: .76rem;
+            line-height: 1.7;
+        }
+
+        .result-card {
+            margin-top: 20px;
+            padding: 17px;
+            border: 1px solid #c7d2fe;
+            border-radius: 13px;
+            background: #f5f3ff;
+            overflow-wrap: anywhere;
+        }
+
+        .result-card.error {
+            border-color: #fecaca;
+            color: #991b1b;
+            background: #fef2f2;
+        }
+
+        .result-title {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-weight: 800;
+            font-size: .9rem;
+        }
+
+        .result-title i {
+            margin-top: 3px;
+            color: var(--primary);
+        }
+
+        .result-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 13px;
+            margin-top: 17px;
+        }
+
+        .result-meta span {
+            display: block;
+            color: var(--muted);
+            font-size: .71rem;
+            font-weight: 600;
+        }
+
+        .result-meta strong {
+            display: block;
+            margin-top: 5px;
+            font-size: .84rem;
+            color: var(--navy);
+        }
+
+        .table-card {
+            margin-top: 24px;
+            overflow: hidden;
+        }
+
+        .table-top {
+            padding: 23px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .table-title h2 {
+            font-size: 1.08rem;
+            font-weight: 800;
+        }
+
+        .table-title p {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: .74rem;
+        }
+
+        .count-pill {
+            padding: 8px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            border-radius: 30px;
+            background: #eeebff;
+            color: #5145e5;
+            font-size: .76rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
             border-collapse: collapse;
-            margin-top:20px;
+            text-align: left;
+            white-space: nowrap;
         }
 
-        th,td{
-            border:1px solid black;
-            padding:10px;
+        thead th {
+            padding: 15px 20px;
+            color: #60718f;
+            background: rgba(237,242,255,.76);
+            font-size: .70rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .7px;
         }
 
-        th{
-            background:#eeeeee;
+        tbody td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eaf0f8;
+            color: #334767;
+            font-size: .80rem;
         }
 
+        tbody tr {
+            transition: background .18s;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8faff80;
+        }
+
+        tbody tr:hover {
+            background: #eeebff82;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .course-badge {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 25px;
+            background: #e9e7ff;
+            color: #5145e5;
+            font-size: .73rem;
+            font-weight: 800;
+        }
+
+        .fee-cell {
+            font-weight: 700;
+            color: #263b63;
+        }
+
+        .enrollment {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .progress-track {
+            width: 48px;
+            height: 5px;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #e2e8f0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #8b7bff, #5145e5);
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .btn-icon {
+            width: 34px;
+            height: 34px;
+            display: inline-grid;
+            place-items: center;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            font-size: .78rem;
+            transition: .18s;
+        }
+
+        .btn-edit {
+            color: #5145e5;
+            background: #eeebff;
+            border-color: #ddd6fe;
+        }
+
+        .btn-edit:hover:not(:disabled) {
+            background: #ddd6fe;
+        }
+
+        .btn-delete {
+            color: #e54865;
+            background: #fff0f2;
+            border-color: #fecdd3;
+        }
+
+        .btn-delete:hover:not(:disabled) {
+            color: white;
+            background: #e54865;
+        }
+
+        .empty-state {
+            padding: 50px 20px !important;
+            text-align: center;
+            white-space: normal;
+        }
+
+        .empty-state i {
+            display: block;
+            margin-bottom: 14px;
+            color: #9aaad0;
+            font-size: 2.3rem;
+        }
+
+        .empty-state strong {
+            display: block;
+            color: #405476;
+            font-size: .92rem;
+        }
+
+        .empty-state p {
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: .78rem;
+        }
+
+        .table-footer {
+            padding: 15px 25px;
+            color: var(--muted);
+            background: #f8faffaa;
+            border-top: 1px solid var(--border);
+            font-size: .74rem;
+        }
+
+        .toast {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 50;
+            width: min(390px, calc(100% - 32px));
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px 18px;
+            border: 1px solid #ffffff70;
+            border-radius: 14px;
+            color: white;
+            background: #172554ed;
+            box-shadow: 0 14px 45px #0f172a45;
+            font-size: .83rem;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+            animation: slideIn .2s ease-out;
+        }
+
+        .toast.success i {
+            color: #6ee7b7;
+        }
+
+        .toast.error i {
+            color: #fda4af;
+        }
+
+        .toast i {
+            margin-top: 3px;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .footer {
+            padding: 24px 10px 0;
+            color: #ffffffcf;
+            text-align: center;
+            font-size: .74rem;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 950px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-placeholder {
+                min-height: 180px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .nav-inner {
+                min-height: 67px;
+                padding: 10px 18px;
+            }
+
+            .brand-logo {
+                width: 42px;
+                height: 42px;
+                font-size: 20px;
+            }
+
+            .brand-name {
+                font-size: 1.08rem;
+            }
+
+            .nav-tag {
+                font-size: .74rem;
+            }
+
+            .page {
+                width: calc(100% - 26px);
+                padding-top: 27px;
+            }
+
+            .hero {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .hero h1 {
+                letter-spacing: -.8px;
+            }
+
+            .hero-pill {
+                font-size: .72rem;
+            }
+
+            .stats {
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 13px 10px;
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .stat-icon {
+                width: 38px;
+                height: 38px;
+                border-radius: 12px;
+                font-size: .95rem;
+            }
+
+            .stat-label {
+                font-size: .69rem;
+            }
+
+            .stat-value {
+                font-size: 1.2rem;
+            }
+
+            .card-inner {
+                padding: 19px;
+            }
+
+            .table-top {
+                padding: 19px;
+            }
+
+            .section-heading h2, .table-title h2 {
+                font-size: .98rem;
+            }
+
+            .table-title p {
+                max-width: 230px;
+                line-height: 1.6;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full, .form-actions {
+                grid-column: auto;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                align-items: center;
+                flex-direction: row;
+                padding: 13px 16px;
+            }
+
+            .search-form {
+                gap: 7px;
+            }
+
+            .table-top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .result-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-<h1>Course Management</h1>
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="#" class="brand" aria-label="UniPortal home">
+            <span class="brand-logo">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </span>
+            <span>
+                <span class="brand-name">UniPortal</span>
+                <span class="brand-subtitle">University Management System</span>
+            </span>
+        </a>
 
-<h3>Add Course</h3>
+        <div class="nav-tag">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Course Administration</span>
+        </div>
+    </div>
+</nav>
 
-<input type="text" id="courseId" placeholder="Course ID">
-<input type="text" id="courseName" placeholder="Course Name">
-<input type="number" id="fee" placeholder="Fee">
-<input type="number" id="capacity" placeholder="Capacity">
-<input type="number" id="enrolledStudents" placeholder="Enrolled">
+<main class="page">
 
-<button onclick="addCourse()">
-    Add Course
-</button>
+    <section class="hero">
+        <div>
+            <span class="eyebrow">
+                <i class="fa-solid fa-sparkles"></i>
+                Welcome to UniPortal
+            </span>
+            <h1>Course Management</h1>
+            <p>Easily create, manage and explore university courses in one place.</p>
+        </div>
 
-<hr>
+        <div class="hero-pill">
+            <i class="fa-solid fa-circle-check"></i>
+            Academic Management
+        </div>
+    </section>
 
-<h3>Search Course</h3>
+    <section class="stats" aria-label="Course statistics">
+        <article class="stat-card">
+            <div class="stat-icon purple">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div>
+                <span class="stat-label">Total Courses</span>
+                <strong class="stat-value" id="statCourses">—</strong>
+            </div>
+        </article>
 
-<input type="text"
-       id="searchId"
-       placeholder="Enter Course ID">
+        <article class="stat-card">
+            <div class="stat-icon blue">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div>
+                <span class="stat-label">Enrolled Students</span>
+                <strong class="stat-value" id="statStudents">—</strong>
+            </div>
+        </article>
 
-<button onclick="searchCourse()">
-    Search
-</button>
+        <article class="stat-card">
+            <div class="stat-icon green">
+                <i class="fa-solid fa-chair"></i>
+            </div>
+            <div>
+                <span class="stat-label">Available Seats</span>
+                <strong class="stat-value" id="statSeats">—</strong>
+            </div>
+        </article>
+    </section>
 
-<div id="searchResult"></div>
+    <section class="main-grid">
 
-<table id="courseTable">
+        <!-- CREATE / EDIT COURSE -->
+        <article class="card">
+            <div class="card-inner">
 
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Fee</th>
-        <th>Capacity</th>
-        <th>Enrolled</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
+                <div class="section-heading">
+                    <div class="section-icon" id="formIcon">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    <div>
+                        <h2 id="formHeading">Create New Course</h2>
+                        <p id="formDescription">
+                            Add a new course with all required details.
+                        </p>
+                    </div>
+                </div>
 
-    <tbody></tbody>
+                <div class="mode-banner hidden" id="editBanner">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span id="editBannerText">Editing course</span>
+                </div>
 
-</table>
+                <form id="courseForm" class="form-grid">
+                    <div class="field full">
+                        <label for="courseId">
+                            <i class="fa-solid fa-tag"></i>
+                            Course ID / Code
+                        </label>
+                        <input id="courseId" name="courseId"
+                               type="text" maxlength="50"
+                               placeholder="e.g. CS-101-WEB" required>
+                    </div>
 
-<script>
+                    <div class="field full">
+                        <label for="courseName">
+                            <i class="fa-solid fa-book"></i>
+                            Full Course Name
+                        </label>
+                        <input id="courseName" name="courseName"
+                               type="text" maxlength="150"
+                               placeholder="e.g. Introduction to Web Development"
+                               required>
+                    </div>
 
-    loadCourses();
+                    <div class="field">
+                        <label for="fee">
+                            <i class="fa-solid fa-coins"></i>
+                            Course Fee (Rs.)
+                        </label>
+                        <input id="fee" name="fee"
+                               type="number" min="0" step="0.01"
+                               placeholder="15000.00" required>
+                    </div>
 
-    function loadCourses(){
+                    <div class="field">
+                        <label for="capacity">
+                            <i class="fa-solid fa-users"></i>
+                            Total Capacity
+                        </label>
+                        <input id="capacity" name="capacity"
+                               type="number" min="0" step="1"
+                               placeholder="e.g. 100" required>
+                    </div>
 
-        fetch('/api/courses')
-            .then(response => response.json())
-            .then(data => {
+                    <div class="field full">
+                        <label for="enrolledStudents">
+                            <i class="fa-solid fa-user-graduate"></i>
+                            Currently Enrolled Students
+                        </label>
+                        <input id="enrolledStudents" name="enrolledStudents"
+                               type="number" min="0" step="1"
+                               placeholder="0" value="0" required>
+                    </div>
 
-                let tableBody =
-                    document.querySelector(
-                        "#courseTable tbody"
-                    );
-
-                tableBody.innerHTML = "";
-
-                data.forEach(course => {
-
-                    tableBody.innerHTML += `
-                <tr>
-
-                    <td>${course.courseId}</td>
-
-                    <td>${course.courseName}</td>
-
-                    <td>${course.fee}</td>
-
-                    <td>${course.capacity}</td>
-
-                    <td>${course.enrolledStudents}</td>
-
-                    <td>
-
-                        <button
-                        class="delete-btn"
-                        onclick="deleteCourse(
-                            '${course.courseId}')">
-
-                            Delete
-
+                    <div class="form-actions">
+                        <button id="submitButton" class="btn btn-primary"
+                                type="submit">
+                            <i class="fa-solid fa-plus"></i>
+                            Add Course
                         </button>
 
+                        <button id="cancelEditButton"
+                                class="btn btn-secondary hidden"
+                                type="button">
+                            <i class="fa-solid fa-xmark"></i>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </article>
+
+        <!-- SEARCH COURSE -->
+        <article class="card">
+            <div class="card-inner">
+
+                <div class="section-heading">
+                    <div class="section-icon">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <div>
+                        <h2>Quick Search</h2>
+                        <p>Find course information instantly by course ID.</p>
+                    </div>
+                </div>
+
+                <form id="searchForm" class="search-form">
+                    <div class="search-wrap">
+                        <i class="fa-solid fa-search"></i>
+                        <input id="searchId" class="search-input"
+                               type="text" maxlength="50"
+                               placeholder="Enter Course ID..." required>
+                    </div>
+
+                    <button class="btn btn-primary search-button"
+                            type="submit" aria-label="Search">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div id="searchResult" aria-live="polite">
+                    <div class="search-placeholder">
+                        <div class="placeholder-icon">
+                            <i class="fa-solid fa-file-circle-question"></i>
+                        </div>
+                        <strong>Search for a course</strong>
+                        <p>Enter a course ID above to see its details, fee and enrollment information.</p>
+                    </div>
+                </div>
+
+            </div>
+        </article>
+
+    </section>
+
+    <!-- COURSE TABLE -->
+    <section class="card table-card">
+        <div class="table-top">
+            <div class="table-title">
+                <div class="section-icon">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div>
+                    <h2>All Available Courses</h2>
+                    <p>View and manage courses registered in the system.</p>
+                </div>
+            </div>
+
+            <span class="count-pill">
+                <i class="fa-solid fa-database"></i>
+                <span id="courseCount">0 Courses</span>
+            </span>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                <tr>
+                    <th>Course ID</th>
+                    <th>Course Name</th>
+                    <th>Course Fee</th>
+                    <th>Capacity</th>
+                    <th>Enrolled</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody id="courseTableBody">
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <strong>Loading courses...</strong>
+                        <p>Please wait while we retrieve your data.</p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-footer" id="tableStatus" aria-live="polite">
+            Connecting to course service...
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>UniPortal &copy; <span id="currentYear"></span> · University Course Management System</p>
+    </footer>
+
+</main>
+
+<div id="toast" class="toast hidden" role="status" aria-live="polite">
+    <i id="toastIcon" class="fa-solid fa-circle-check"></i>
+    <span id="toastMessage"></span>
+</div>
+
+<script>
+    'use strict';
+
+    // Existing Spring Boot API routes
+    const API_URL = '/api/courses';
+
+    const $ = id => document.getElementById(id);
+
+    const form = $('courseForm');
+    const tableBody = $('courseTableBody');
+    const submitButton = $('submitButton');
+    const cancelEditButton = $('cancelEditButton');
+
+    let courses = [];
+    let editingOriginalId = null;
+    let toastTimer = null;
+    let requestInProgress = false;
+
+    $('currentYear').textContent = new Date().getFullYear();
+
+    // Prevent server-provided text from being interpreted as HTML.
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        })[char]);
+    }
+
+    function money(value) {
+        const number = Number(value);
+
+        if (!Number.isFinite(number)) {
+            return '0.00';
+        }
+
+        return number.toLocaleString('en-LK', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = $('toast');
+
+        clearTimeout(toastTimer);
+
+        toast.className = `toast ${type}`;
+        $('toastIcon').className = type === 'success'
+            ? 'fa-solid fa-circle-check'
+            : 'fa-solid fa-circle-exclamation';
+
+        $('toastMessage').textContent = message;
+
+        toastTimer = setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 4500);
+    }
+
+    async function request(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                ...(options.body
+                    ? { 'Content-Type': 'application/json' }
+                    : {}),
+                ...options.headers
+            }
+        });
+
+        const text = await response.text();
+
+        if (!response.ok) {
+            throw new Error(
+                text || `Request failed with status ${response.status}`
+            );
+        }
+
+        if (!text.trim()) {
+            return null;
+        }
+
+        try {
+            return JSON.parse(text);
+        } catch {
+            return text;
+        }
+    }
+
+    function courseUrl(id) {
+        return `${API_URL}/${encodeURIComponent(id)}`;
+    }
+
+    function renderEmpty(message, detail = '') {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty-state">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <strong>${escapeHtml(message)}</strong>
+                    <p>${escapeHtml(detail)}</p>
+                </td>
+            </tr>`;
+    }
+
+    function renderCourses() {
+        $('courseCount').textContent =
+            `${courses.length} ${courses.length === 1 ? 'Course' : 'Courses'}`;
+
+        const totalStudents = courses.reduce(
+            (sum, c) => sum + (Number(c.enrolledStudents) || 0), 0
+        );
+
+        const totalSeats = courses.reduce(
+            (sum, c) => sum + Math.max(
+                0, (Number(c.capacity) || 0) -
+                (Number(c.enrolledStudents) || 0)
+            ), 0
+        );
+
+        $('statCourses').textContent = courses.length.toLocaleString('en-LK');
+        $('statStudents').textContent = totalStudents.toLocaleString('en-LK');
+        $('statSeats').textContent = totalSeats.toLocaleString('en-LK');
+
+        if (courses.length === 0) {
+            renderEmpty(
+                'No courses available yet',
+                'Use the form above to create your first course.'
+            );
+            return;
+        }
+
+        tableBody.innerHTML = courses.map(course => {
+            const capacity = Math.max(0, Number(course.capacity) || 0);
+            const enrolled = Math.max(
+                0, Number(course.enrolledStudents) || 0
+            );
+
+            const percentage = capacity > 0
+                ? Math.min(100, enrolled / capacity * 100)
+                : 0;
+
+            return `
+                <tr>
+                    <td>
+                        <span class="course-badge">
+                            ${escapeHtml(course.courseId)}
+                        </span>
                     </td>
 
-                </tr>
-                `;
+                    <td><strong>${escapeHtml(course.courseName)}</strong></td>
 
-                });
+                    <td class="fee-cell">Rs. ${money(course.fee)}</td>
 
-            });
+                    <td>${capacity.toLocaleString('en-LK')}</td>
 
+                    <td>
+                        <div class="enrollment">
+                            <span>${enrolled.toLocaleString('en-LK')}</span>
+                            <span class="progress-track"
+                                  title="${percentage.toFixed(0)}% enrolled">
+                                <span class="progress-fill"
+                                      style="display:block;width:${percentage}%"></span>
+                            </span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="actions">
+                            <button type="button"
+                                    class="btn-icon btn-edit"
+                                    data-action="edit"
+                                    data-id="${escapeHtml(course.courseId)}"
+                                    aria-label="Edit ${escapeHtml(course.courseId)}"
+                                    title="Edit course">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                            <button type="button"
+                                    class="btn-icon btn-delete"
+                                    data-action="delete"
+                                    data-id="${escapeHtml(course.courseId)}"
+                                    aria-label="Delete ${escapeHtml(course.courseId)}"
+                                    title="Delete course">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
+        }).join('');
     }
 
-    function addCourse(){
+    async function loadCourses() {
+        $('tableStatus').textContent = 'Loading course data...';
 
-        let course = {
+        try {
+            const data = await request(API_URL);
 
-            courseId:
-            document.getElementById(
-                "courseId").value,
+            if (!Array.isArray(data)) {
+                throw new Error('The API did not return a course list.');
+            }
 
-            courseName:
-            document.getElementById(
-                "courseName").value,
+            courses = data;
+            renderCourses();
 
-            fee:
-                parseFloat(
-                    document.getElementById(
-                        "fee").value),
+            $('tableStatus').textContent =
+                `Showing ${courses.length} course${courses.length === 1 ? '' : 's'}.`;
 
-            capacity:
-                parseInt(
-                    document.getElementById(
-                        "capacity").value),
+        } catch (error) {
+            courses = [];
+            $('statCourses').textContent = '—';
+            $('statStudents').textContent = '—';
+            $('statSeats').textContent = '—';
 
-            enrolledStudents:
-                parseInt(
-                    document.getElementById(
-                        "enrolledStudents").value)
+            $('courseCount').textContent = 'Unavailable';
+
+            renderEmpty(
+                'Unable to load courses',
+                'Check the backend server and API connection, then refresh.'
+            );
+
+            $('tableStatus').textContent = error.message;
+        }
+    }
+
+    function validateCourse(course) {
+        if (!course.courseId || !course.courseName) {
+            return 'Please enter both the course ID and course name.';
+        }
+
+        if (course.fee === '' || !Number.isFinite(Number(course.fee))
+            || Number(course.fee) < 0) {
+            return 'Enter a valid course fee of zero or more.';
+        }
+
+        if (course.capacity === '' ||
+            !Number.isInteger(Number(course.capacity)) ||
+            Number(course.capacity) < 0) {
+            return 'Capacity must be a non-negative whole number.';
+        }
+
+        if (course.enrolledStudents === '' ||
+            !Number.isInteger(Number(course.enrolledStudents)) ||
+            Number(course.enrolledStudents) < 0) {
+            return 'Enrolled students must be a non-negative whole number.';
+        }
+
+        if (Number(course.enrolledStudents) > Number(course.capacity)) {
+            return 'Enrolled students cannot exceed total capacity.';
+        }
+
+        return null;
+    }
+
+    function getFormCourse() {
+        return {
+            courseId: $('courseId').value.trim(),
+            courseName: $('courseName').value.trim(),
+            fee: $('fee').value,
+            capacity: $('capacity').value,
+            enrolledStudents: $('enrolledStudents').value
+        };
+    }
+
+    function resetForm() {
+        form.reset();
+        editingOriginalId = null;
+
+        $('formHeading').textContent = 'Create New Course';
+        $('formDescription').textContent =
+            'Add a new course with all required details.';
+
+        $('formIcon').innerHTML = '<i class="fa-solid fa-plus"></i>';
+        $('editBanner').classList.add('hidden');
+
+        $('courseId').readOnly = false;
+
+        submitButton.innerHTML =
+            '<i class="fa-solid fa-plus"></i> Add Course';
+
+        cancelEditButton.classList.add('hidden');
+        submitButton.disabled = false;
+    }
+
+    function startEdit(courseId) {
+        const course = courses.find(
+            item => String(item.courseId) === courseId
+        );
+
+        if (!course) {
+            showToast('Course not found in the current list.', 'error');
+            return;
+        }
+
+        editingOriginalId = String(course.courseId);
+
+        $('courseId').value = course.courseId;
+        $('courseName').value = course.courseName ?? '';
+        $('fee').value = course.fee ?? '';
+        $('capacity').value = course.capacity ?? 0;
+        $('enrolledStudents').value = course.enrolledStudents ?? 0;
+
+        $('courseId').readOnly = true;
+
+        $('formHeading').textContent = 'Edit Course';
+        $('formDescription').textContent =
+            'Update the details of this existing course.';
+
+        $('formIcon').innerHTML =
+            '<i class="fa-solid fa-pen-to-square"></i>';
+
+        $('editBannerText').textContent =
+            `Editing course: ${course.courseId}`;
+
+        $('editBanner').classList.remove('hidden');
+
+        submitButton.innerHTML =
+            '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
+
+        cancelEditButton.classList.remove('hidden');
+
+        $('courseForm').scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+
+        $('courseName').focus();
+    }
+
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        if (requestInProgress) return;
+
+        const raw = getFormCourse();
+        const error = validateCourse(raw);
+
+        if (error) {
+            showToast(error, 'error');
+            return;
+        }
+
+        const course = {
+            courseId: raw.courseId,
+            courseName: raw.courseName,
+            fee: Number(raw.fee),
+            capacity: Number(raw.capacity),
+            enrolledStudents: Number(raw.enrolledStudents)
         };
 
-        fetch('/api/courses',{
+        const isEditing = editingOriginalId !== null;
 
-            method:'POST',
+        if (!isEditing && courses.some(
+            item => String(item.courseId).toLowerCase() ===
+                course.courseId.toLowerCase()
+        )) {
+            showToast('A course with this ID already exists.', 'error');
+            return;
+        }
 
-            headers:{
-                'Content-Type':
-                    'application/json'
-            },
+        const originalButtonHTML = submitButton.innerHTML;
 
-            body:
-                JSON.stringify(course)
-        })
+        requestInProgress = true;
+        submitButton.disabled = true;
+        cancelEditButton.disabled = true;
 
-            .then(response => response.text())
+        submitButton.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
 
-            .then(data =>{
+        try {
+            if (isEditing) {
+                // Requires PUT /api/courses/{courseId} on the backend.
+                await request(courseUrl(editingOriginalId), {
+                    method: 'PUT',
+                    body: JSON.stringify(course)
+                });
 
-                alert(data);
+                resetForm();
+                await loadCourses();
 
-                location.reload();
+                showToast('Course updated successfully.');
+            } else {
+                await request(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(course)
+                });
 
+                resetForm();
+                await loadCourses();
+
+                showToast('Course added successfully.');
+            }
+        } catch (error) {
+            showToast(
+                (isEditing ? 'Unable to update course: ' :
+                    'Unable to add course: ') + error.message,
+                'error'
+            );
+        } finally {
+            requestInProgress = false;
+            submitButton.disabled = false;
+            cancelEditButton.disabled = false;
+
+            if (editingOriginalId === null) {
+                submitButton.innerHTML =
+                    '<i class="fa-solid fa-plus"></i> Add Course';
+            } else {
+                submitButton.innerHTML = originalButtonHTML;
+            }
+        }
+    });
+
+    cancelEditButton.addEventListener('click', resetForm);
+
+    $('searchForm').addEventListener('submit', async event => {
+        event.preventDefault();
+
+        const id = $('searchId').value.trim();
+
+        if (!id) return;
+
+        const button = event.submitter;
+        if (button) button.disabled = true;
+
+        $('searchResult').innerHTML = `
+            <div class="search-placeholder">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <strong>Searching courses...</strong>
+            </div>`;
+
+        try {
+            const course = await request(courseUrl(id));
+
+            if (!course || typeof course !== 'object') {
+                throw new Error('Course not found.');
+            }
+
+            $('searchResult').innerHTML = `
+                <div class="result-card">
+                    <div class="result-title">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>${escapeHtml(course.courseName)}</span>
+                    </div>
+
+                    <div class="result-meta">
+                        <div>
+                            <span>Course ID</span>
+                            <strong>${escapeHtml(course.courseId)}</strong>
+                        </div>
+                        <div>
+                            <span>Course Fee</span>
+                            <strong>Rs. ${money(course.fee)}</strong>
+                        </div>
+                        <div>
+                            <span>Total Capacity</span>
+                            <strong>${escapeHtml(course.capacity)}</strong>
+                        </div>
+                        <div>
+                            <span>Enrolled Students</span>
+                            <strong>${escapeHtml(course.enrolledStudents)}</strong>
+                        </div>
+                    </div>
+                </div>`;
+
+        } catch (error) {
+            $('searchResult').innerHTML = `
+                <div class="result-card error">
+                    <div class="result-title">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>${escapeHtml(error.message || 'Course not found.')}</span>
+                    </div>
+                </div>`;
+        } finally {
+            if (button) button.disabled = false;
+        }
+    });
+
+    tableBody.addEventListener('click', async event => {
+        const button = event.target.closest('button[data-action]');
+
+        if (!button || button.disabled || requestInProgress) return;
+
+        const courseId = button.dataset.id;
+        const action = button.dataset.action;
+
+        if (action === 'edit') {
+            startEdit(courseId);
+            return;
+        }
+
+        if (action !== 'delete') return;
+
+        const confirmed = confirm(
+            `Permanently delete course "${courseId}"? This action cannot be undone.`
+        );
+
+        if (!confirmed) return;
+
+        button.disabled = true;
+
+        try {
+            await request(courseUrl(courseId), {
+                method: 'DELETE'
             });
 
-    }
+            if (editingOriginalId === courseId) {
+                resetForm();
+            }
 
-    function deleteCourse(courseId){
+            await loadCourses();
 
-        fetch('/api/courses/' + courseId,{
+            showToast(`Course ${courseId} deleted successfully.`);
+        } catch (error) {
+            showToast('Unable to delete course: ' + error.message, 'error');
+            button.disabled = false;
+        }
+    });
 
-            method:'DELETE'
-
-        })
-
-            .then(response => response.text())
-
-            .then(data =>{
-
-                alert(data);
-
-                location.reload();
-
-            });
-
-    }
-
-    function searchCourse(){
-
-        let courseId =
-            document.getElementById(
-                "searchId").value;
-
-        fetch('/api/courses/' + courseId)
-
-            .then(response => response.json())
-
-            .then(course =>{
-
-                document.getElementById(
-                    "searchResult").innerHTML =
-
-                    "<h4>" +
-                    course.courseName +
-                    " - Rs." +
-                    course.fee +
-                    "</h4>";
-
-            })
-
-            .catch(() => {
-
-                document.getElementById(
-                    "searchResult").innerHTML
-                    =
-                    "Course Not Found";
-
-            });
-
-    }
-
+    loadCourses();
 </script>
 
 </body>
