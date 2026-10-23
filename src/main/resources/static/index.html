@@ -7,7 +7,7 @@
 
         body{
             font-family: Arial;
-            margin: 40px;
+            margin:40px;
         }
 
         input{
@@ -16,8 +16,14 @@
         }
 
         button{
-            padding:8px 15px;
+            padding:8px 12px;
             cursor:pointer;
+        }
+
+        .delete-btn{
+            background:red;
+            color:white;
+            border:none;
         }
 
         table{
@@ -36,8 +42,8 @@
         }
 
     </style>
-
 </head>
+
 <body>
 
 <h1>Course Management</h1>
@@ -45,19 +51,28 @@
 <h3>Add Course</h3>
 
 <input type="text" id="courseId" placeholder="Course ID">
-
 <input type="text" id="courseName" placeholder="Course Name">
-
 <input type="number" id="fee" placeholder="Fee">
-
 <input type="number" id="capacity" placeholder="Capacity">
-
-<input type="number" id="enrolledStudents"
-       placeholder="Enrolled">
+<input type="number" id="enrolledStudents" placeholder="Enrolled">
 
 <button onclick="addCourse()">
     Add Course
 </button>
+
+<hr>
+
+<h3>Search Course</h3>
+
+<input type="text"
+       id="searchId"
+       placeholder="Enter Course ID">
+
+<button onclick="searchCourse()">
+    Search
+</button>
+
+<div id="searchResult"></div>
 
 <table id="courseTable">
 
@@ -68,6 +83,7 @@
         <th>Fee</th>
         <th>Capacity</th>
         <th>Enrolled</th>
+        <th>Actions</th>
     </tr>
     </thead>
 
@@ -95,13 +111,32 @@
                 data.forEach(course => {
 
                     tableBody.innerHTML += `
-                    <tr>
-                        <td>${course.courseId}</td>
-                        <td>${course.courseName}</td>
-                        <td>${course.fee}</td>
-                        <td>${course.capacity}</td>
-                        <td>${course.enrolledStudents}</td>
-                    </tr>
+                <tr>
+
+                    <td>${course.courseId}</td>
+
+                    <td>${course.courseName}</td>
+
+                    <td>${course.fee}</td>
+
+                    <td>${course.capacity}</td>
+
+                    <td>${course.enrolledStudents}</td>
+
+                    <td>
+
+                        <button
+                        class="delete-btn"
+                        onclick="deleteCourse(
+                            '${course.courseId}')">
+
+                            Delete
+
+                        </button>
+
+                    </td>
+
+                </tr>
                 `;
 
                 });
@@ -149,14 +184,69 @@
 
             body:
                 JSON.stringify(course)
-
         })
+
             .then(response => response.text())
-            .then(data => {
+
+            .then(data =>{
 
                 alert(data);
 
                 location.reload();
+
+            });
+
+    }
+
+    function deleteCourse(courseId){
+
+        fetch('/api/courses/' + courseId,{
+
+            method:'DELETE'
+
+        })
+
+            .then(response => response.text())
+
+            .then(data =>{
+
+                alert(data);
+
+                location.reload();
+
+            });
+
+    }
+
+    function searchCourse(){
+
+        let courseId =
+            document.getElementById(
+                "searchId").value;
+
+        fetch('/api/courses/' + courseId)
+
+            .then(response => response.json())
+
+            .then(course =>{
+
+                document.getElementById(
+                    "searchResult").innerHTML =
+
+                    "<h4>" +
+                    course.courseName +
+                    " - Rs." +
+                    course.fee +
+                    "</h4>";
+
+            })
+
+            .catch(() => {
+
+                document.getElementById(
+                    "searchResult").innerHTML
+                    =
+                    "Course Not Found";
 
             });
 
