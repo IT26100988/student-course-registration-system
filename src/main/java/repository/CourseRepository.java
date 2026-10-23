@@ -12,4 +12,6 @@ public interface CourseRepository {
     Course findById(String courseId);
 
     boolean deleteCourse(String courseId);
+
+    boolean updateCourse(Course updatedCourse);
 }

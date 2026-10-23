@@ -8,17 +8,14 @@ import java.util.List;
 
 public class TxtCourseRepository implements CourseRepository {
 
-    private static final String FILE_PATH =
-            "data/courses.txt";
+    private static final String FILE_PATH = "data/courses.txt";
 
     @Override
     public void addCourse(Course course) {
 
-        try (
-                BufferedWriter writer =
-                        new BufferedWriter(
-                                new FileWriter(FILE_PATH, true))
-        ) {
+        try (BufferedWriter writer =
+                     new BufferedWriter(
+                             new FileWriter(FILE_PATH, true))) {
 
             writer.write(
                     course.getCourseId() + "," +
@@ -40,11 +37,9 @@ public class TxtCourseRepository implements CourseRepository {
 
         List<Course> courses = new ArrayList<>();
 
-        try (
-                BufferedReader reader =
-                        new BufferedReader(
-                                new FileReader(FILE_PATH))
-        ) {
+        try (BufferedReader reader =
+                     new BufferedReader(
+                             new FileReader(FILE_PATH))) {
 
             String line;
 
@@ -54,16 +49,15 @@ public class TxtCourseRepository implements CourseRepository {
 
                 if (data.length == 5) {
 
-                    Course course =
+                    courses.add(
                             new Course(
                                     data[0],
                                     data[1],
                                     Double.parseDouble(data[2]),
                                     Integer.parseInt(data[3]),
                                     Integer.parseInt(data[4])
-                            );
-
-                    courses.add(course);
+                            )
+                    );
                 }
             }
 
@@ -92,17 +86,62 @@ public class TxtCourseRepository implements CourseRepository {
     @Override
     public boolean deleteCourse(String courseId) {
 
-        List<Course> courses =
-                getAllCourses();
+        List<Course> courses = getAllCourses();
 
         boolean found = false;
 
-        for (Course course : courses) {
+        courses.removeIf(course -> {
 
             if (course.getCourseId()
                     .equalsIgnoreCase(courseId)) {
 
-                courses.remove(course);
+                return true;
+            }
+            return false;
+        });
+
+        try (BufferedWriter writer =
+                     new BufferedWriter(
+                             new FileWriter(FILE_PATH))) {
+
+            for (Course course : courses) {
+
+                writer.write(
+                        course.getCourseId() + "," +
+                                course.getCourseName() + "," +
+                                course.getFee() + "," +
+                                course.getCapacity() + "," +
+                                course.getEnrolledStudents()
+                );
+
+                writer.newLine();
+            }
+
+            found = true;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return found;
+    }
+
+    @Override
+    public boolean updateCourse(Course updatedCourse) {
+
+        List<Course> courses = getAllCourses();
+
+        boolean found = false;
+
+        for (int i = 0; i < courses.size(); i++) {
+
+            if (courses.get(i)
+                    .getCourseId()
+                    .equalsIgnoreCase(
+                            updatedCourse.getCourseId())) {
+
+                courses.set(i, updatedCourse);
+
                 found = true;
                 break;
             }
@@ -110,11 +149,9 @@ public class TxtCourseRepository implements CourseRepository {
 
         if (found) {
 
-            try (
-                    BufferedWriter writer =
-                            new BufferedWriter(
-                                    new FileWriter(FILE_PATH))
-            ) {
+            try (BufferedWriter writer =
+                         new BufferedWriter(
+                                 new FileWriter(FILE_PATH))) {
 
                 for (Course course : courses) {
 

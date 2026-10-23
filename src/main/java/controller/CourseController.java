@@ -24,7 +24,7 @@ public class CourseController {
                     c.getCourseId() +
                             " | " +
                             c.getCourseName() +
-                            " | Fee: " +
+                            " | Fee : " +
                             c.getFee()
             );
         }
@@ -44,28 +44,50 @@ public class CourseController {
         }
 
         System.out.println(
-                "\n========== AVAILABILITY =========="
+                "\n========== AVAILABLE COURSES =========="
+        );
+
+        for (Course c :
+                service.filterAvailableCourses()) {
+
+            System.out.println(
+                    c.getCourseName()
+            );
+        }
+
+        System.out.println(
+                "\n========== UPDATE =========="
+        );
+
+        Course updatedCourse =
+                new Course(
+                        "C002",
+                        "Advanced Web Development",
+                        45000,
+                        50,
+                        20
+                );
+
+        boolean updated =
+                service.updateCourse(
+                        updatedCourse);
+
+        System.out.println(
+                "Updated : " + updated
+        );
+
+        System.out.println(
+                "\n========== FEES =========="
         );
 
         for (Course c :
                 service.getAllCourses()) {
 
             System.out.println(
-                    c.getCourseName()
-                            + " -> "
-                            + c.isAvailable()
+                    c.getCourseName() +
+                            " -> Rs." +
+                            c.getFee()
             );
         }
-
-        System.out.println(
-                "\n========== DELETE =========="
-        );
-
-        boolean deleted =
-                service.deleteCourse("C004");
-
-        System.out.println(
-                "Deleted : " + deleted
-        );
     }
 }

@@ -3,6 +3,7 @@ package service;
 import model.Course;
 import repository.CourseRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseCatalogService {
@@ -33,5 +34,28 @@ public class CourseCatalogService {
             String courseId) {
 
         return repository.deleteCourse(courseId);
+    }
+
+    public boolean updateCourse(
+            Course course) {
+
+        return repository.updateCourse(course);
+    }
+
+    public List<Course> filterAvailableCourses() {
+
+        List<Course> available =
+                new ArrayList<>();
+
+        for (Course course :
+                repository.getAllCourses()) {
+
+            if (course.isAvailable()) {
+
+                available.add(course);
+            }
+        }
+
+        return available;
     }
 }
