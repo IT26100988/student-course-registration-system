@@ -20,4 +20,8 @@ public class CourseCatalogService {
     public List<Course> getAllCourses() {
         return repository.getAllCourses();
     }
+
+    public Course findCourseById(String courseId) {
+        return repository.findById(courseId);
+    }
 }

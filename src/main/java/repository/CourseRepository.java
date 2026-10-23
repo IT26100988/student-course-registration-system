@@ -8,4 +8,6 @@ public interface CourseRepository {
     void addCourse(Course course);
 
     List<Course> getAllCourses();
+
+    Course findById(String courseId);
 }

@@ -12,8 +12,7 @@ import java.util.List;
 
 public class TxtCourseRepository implements CourseRepository {
 
-    private static final String FILE_PATH =
-            "data/courses.txt";
+    private static final String FILE_PATH = "data/courses.txt";
 
     @Override
     public void addCourse(Course course) {
@@ -76,5 +75,20 @@ public class TxtCourseRepository implements CourseRepository {
         }
 
         return courses;
+    }
+
+    @Override
+    public Course findById(String courseId) {
+
+        List<Course> courses = getAllCourses();
+
+        for (Course course : courses) {
+
+            if (course.getCourseId().equalsIgnoreCase(courseId)) {
+                return course;
+            }
+        }
+
+        return null;
     }
 }

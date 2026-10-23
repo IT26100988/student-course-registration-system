@@ -36,5 +36,23 @@ public class CourseController {
                             c.getFee()
             );
         }
+
+        System.out.println("\nSearch Result");
+
+        Course foundCourse =
+                service.findCourseById("C002");
+
+        if (foundCourse != null) {
+
+            System.out.println(
+                    foundCourse.getCourseId() + " | " +
+                            foundCourse.getCourseName() + " | " +
+                            foundCourse.getFee()
+            );
+
+        } else {
+
+            System.out.println("Course Not Found!");
+        }
     }
 }
