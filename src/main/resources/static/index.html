@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,9 +39,9 @@
             background:
                     linear-gradient(
                             120deg,
-                            rgba(12, 25, 58, .60),
-                            rgba(37, 36, 105, .32),
-                            rgba(14, 32, 64, .46)
+                            rgba(12, 25, 58, .65),
+                            rgba(37, 36, 105, .4),
+                            rgba(14, 32, 64, .55)
                     ),
                     url('https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=2000&q=85')
                     center / cover fixed no-repeat;
@@ -227,20 +226,9 @@
             font-size: 1.15rem;
         }
 
-        .stat-icon.purple {
-            background: #eeebff;
-            color: #5b4bdf;
-        }
-
-        .stat-icon.blue {
-            background: #e0f2fe;
-            color: #0284c7;
-        }
-
-        .stat-icon.green {
-            background: #d1fae5;
-            color: #059669;
-        }
+        .stat-icon.purple { background: #eeebff; color: #5b4bdf; }
+        .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
+        .stat-icon.green { background: #d1fae5; color: #059669; }
 
         .stat-label {
             color: var(--muted);
@@ -765,17 +753,9 @@
             animation: slideIn .2s ease-out;
         }
 
-        .toast.success i {
-            color: #6ee7b7;
-        }
-
-        .toast.error i {
-            color: #fda4af;
-        }
-
-        .toast i {
-            margin-top: 3px;
-        }
+        .toast.success i { color: #6ee7b7; }
+        .toast.error i { color: #fda4af; }
+        .toast i { margin-top: 3px; }
 
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(8px); }
@@ -791,136 +771,32 @@
         }
 
         @media (max-width: 950px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .search-placeholder {
-                min-height: 180px;
-            }
+            .main-grid { grid-template-columns: 1fr; }
+            .search-placeholder { min-height: 180px; }
         }
 
         @media (max-width: 650px) {
-            .nav-inner {
-                min-height: 67px;
-                padding: 10px 18px;
-            }
-
-            .brand-logo {
-                width: 42px;
-                height: 42px;
-                font-size: 20px;
-            }
-
-            .brand-name {
-                font-size: 1.08rem;
-            }
-
-            .nav-tag {
-                font-size: .74rem;
-            }
-
-            .page {
-                width: calc(100% - 26px);
-                padding-top: 27px;
-            }
-
-            .hero {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .hero h1 {
-                letter-spacing: -.8px;
-            }
-
-            .hero-pill {
-                font-size: .72rem;
-            }
-
-            .stats {
-                gap: 10px;
-            }
-
-            .stat-card {
-                padding: 13px 10px;
-                align-items: flex-start;
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .stat-icon {
-                width: 38px;
-                height: 38px;
-                border-radius: 12px;
-                font-size: .95rem;
-            }
-
-            .stat-label {
-                font-size: .69rem;
-            }
-
-            .stat-value {
-                font-size: 1.2rem;
-            }
-
-            .card-inner {
-                padding: 19px;
-            }
-
-            .table-top {
-                padding: 19px;
-            }
-
-            .section-heading h2, .table-title h2 {
-                font-size: .98rem;
-            }
-
-            .table-title p {
-                max-width: 230px;
-                line-height: 1.6;
-            }
+            .nav-inner { min-height: 67px; padding: 10px 18px; }
+            .brand-logo { width: 42px; height: 42px; font-size: 20px; }
+            .brand-name { font-size: 1.08rem; }
+            .nav-tag { font-size: .74rem; }
+            .page { width: calc(100% - 26px); padding-top: 27px; }
+            .hero { align-items: flex-start; flex-direction: column; }
+            .stats { gap: 10px; }
+            .stat-card { padding: 13px 10px; align-items: flex-start; flex-direction: column; gap: 10px; }
+            .stat-icon { width: 38px; height: 38px; border-radius: 12px; font-size: .95rem; }
+            .stat-label { font-size: .69rem; }
+            .stat-value { font-size: 1.2rem; }
+            .card-inner { padding: 19px; }
+            .table-top { padding: 19px; }
+            .section-heading h2, .table-title h2 { font-size: .98rem; }
         }
 
         @media (max-width: 430px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .field.full, .form-actions {
-                grid-column: auto;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-            }
-
-            .stat-card {
-                align-items: center;
-                flex-direction: row;
-                padding: 13px 16px;
-            }
-
-            .search-form {
-                gap: 7px;
-            }
-
-            .table-top {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .result-meta {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation: none !important;
-                transition: none !important;
-                scroll-behavior: auto !important;
-            }
+            .form-grid { grid-template-columns: 1fr; }
+            .field.full, .form-actions { grid-column: auto; }
+            .stats { grid-template-columns: 1fr; }
+            .stat-card { align-items: center; flex-direction: row; padding: 13px 16px; }
         }
     </style>
 </head>
@@ -964,6 +840,7 @@
         </div>
     </section>
 
+    <!-- STATS -->
     <section class="stats" aria-label="Course statistics">
         <article class="stat-card">
             <div class="stat-icon purple">
@@ -971,7 +848,7 @@
             </div>
             <div>
                 <span class="stat-label">Total Courses</span>
-                <strong class="stat-value" id="statCourses">—</strong>
+                <strong class="stat-value" id="statCourses">0</strong>
             </div>
         </article>
 
@@ -981,7 +858,7 @@
             </div>
             <div>
                 <span class="stat-label">Enrolled Students</span>
-                <strong class="stat-value" id="statStudents">—</strong>
+                <strong class="stat-value" id="statStudents">0</strong>
             </div>
         </article>
 
@@ -991,7 +868,7 @@
             </div>
             <div>
                 <span class="stat-label">Available Seats</span>
-                <strong class="stat-value" id="statSeats">—</strong>
+                <strong class="stat-value" id="statSeats">0</strong>
             </div>
         </article>
     </section>
@@ -1008,9 +885,7 @@
                     </div>
                     <div>
                         <h2 id="formHeading">Create New Course</h2>
-                        <p id="formDescription">
-                            Add a new course with all required details.
-                        </p>
+                        <p id="formDescription">Add a new course with all required details.</p>
                     </div>
                 </div>
 
@@ -1037,8 +912,7 @@
                         </label>
                         <input id="courseName" name="courseName"
                                type="text" maxlength="150"
-                               placeholder="e.g. Introduction to Web Development"
-                               required>
+                               placeholder="e.g. Introduction to Web Development" required>
                     </div>
 
                     <div class="field">
@@ -1072,15 +946,12 @@
                     </div>
 
                     <div class="form-actions">
-                        <button id="submitButton" class="btn btn-primary"
-                                type="submit">
+                        <button id="submitButton" class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-plus"></i>
                             Add Course
                         </button>
 
-                        <button id="cancelEditButton"
-                                class="btn btn-secondary hidden"
-                                type="button">
+                        <button id="cancelEditButton" class="btn btn-secondary hidden" type="button">
                             <i class="fa-solid fa-xmark"></i>
                             Cancel
                         </button>
@@ -1112,8 +983,7 @@
                                placeholder="Enter Course ID..." required>
                     </div>
 
-                    <button class="btn btn-primary search-button"
-                            type="submit" aria-label="Search">
+                    <button class="btn btn-primary search-button" type="submit" aria-label="Search">
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </form>
@@ -1137,19 +1007,19 @@
     <section class="card table-card">
         <div class="table-top">
             <div class="table-title">
-                <div class="section-icon">
-                    <i class="fa-solid fa-list-check"></i>
+                <div class="section-icon" style="width: 40px; height: 40px; border-radius: 12px; font-size: 0.9rem;">
+                    <i class="fa-solid fa-list"></i>
                 </div>
                 <div>
                     <h2>All Available Courses</h2>
-                    <p>View and manage courses registered in the system.</p>
+                    <p>View and manage all registered university courses.</p>
                 </div>
             </div>
 
-            <span class="count-pill">
-                <i class="fa-solid fa-database"></i>
-                <span id="courseCount">0 Courses</span>
-            </span>
+            <div class="count-pill">
+                <i class="fa-solid fa-layer-group"></i>
+                <span id="courseCountBadge">0 Courses</span>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -1158,561 +1028,338 @@
                 <tr>
                     <th>Course ID</th>
                     <th>Course Name</th>
-                    <th>Course Fee</th>
+                    <th>Fee</th>
                     <th>Capacity</th>
                     <th>Enrolled</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
-
                 <tbody id="courseTableBody">
-                <tr>
-                    <td colspan="6" class="empty-state">
-                        <i class="fa-solid fa-spinner fa-spin"></i>
-                        <strong>Loading courses...</strong>
-                        <p>Please wait while we retrieve your data.</p>
-                    </td>
-                </tr>
+                <!-- Dynamic Content -->
                 </tbody>
             </table>
         </div>
 
-        <div class="table-footer" id="tableStatus" aria-live="polite">
-            Connecting to course service...
+        <div class="table-footer">
+            Showing all active courses registered in the system database.
         </div>
     </section>
 
-    <footer class="footer">
-        <p>UniPortal &copy; <span id="currentYear"></span> · University Course Management System</p>
-    </footer>
-
 </main>
 
-<div id="toast" class="toast hidden" role="status" aria-live="polite">
-    <i id="toastIcon" class="fa-solid fa-circle-check"></i>
-    <span id="toastMessage"></span>
-</div>
+<footer class="footer">
+    <p>&copy; 2026 UniPortal Course Management System. All rights reserved.</p>
+</footer>
 
 <script>
-    'use strict';
+    const API_BASE = '/api/courses';
 
-    // Existing Spring Boot API routes
-    const API_URL = '/api/courses';
+    let isEditMode = false;
+    let coursesData = [];
 
-    const $ = id => document.getElementById(id);
+    const courseForm = document.getElementById('courseForm');
+    const courseIdInput = document.getElementById('courseId');
+    const courseNameInput = document.getElementById('courseName');
+    const feeInput = document.getElementById('fee');
+    const capacityInput = document.getElementById('capacity');
+    const enrolledStudentsInput = document.getElementById('enrolledStudents');
 
-    const form = $('courseForm');
-    const tableBody = $('courseTableBody');
-    const submitButton = $('submitButton');
-    const cancelEditButton = $('cancelEditButton');
+    const submitButton = document.getElementById('submitButton');
+    const cancelEditButton = document.getElementById('cancelEditButton');
+    const formHeading = document.getElementById('formHeading');
+    const formDescription = document.getElementById('formDescription');
+    const formIcon = document.getElementById('formIcon');
+    const editBanner = document.getElementById('editBanner');
+    const editBannerText = document.getElementById('editBannerText');
 
-    let courses = [];
-    let editingOriginalId = null;
-    let toastTimer = null;
-    let requestInProgress = false;
+    const searchForm = document.getElementById('searchForm');
+    const searchIdInput = document.getElementById('searchId');
+    const searchResult = document.getElementById('searchResult');
 
-    $('currentYear').textContent = new Date().getFullYear();
+    const courseTableBody = document.getElementById('courseTableBody');
+    const courseCountBadge = document.getElementById('courseCountBadge');
 
-    // Prevent server-provided text from being interpreted as HTML.
-    function escapeHtml(value) {
-        return String(value ?? '').replace(/[&<>"']/g, char => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        })[char]);
+    const statCourses = document.getElementById('statCourses');
+    const statStudents = document.getElementById('statStudents');
+    const statSeats = document.getElementById('statSeats');
+
+    document.addEventListener('DOMContentLoaded', loadCourses);
+
+    // Load All Courses
+    function loadCourses() {
+        fetch(API_BASE)
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch courses');
+                return res.json();
+            })
+            .then(data => {
+                coursesData = data;
+                renderTable(data);
+                updateStats(data);
+            })
+            .catch(err => {
+                showToast('Error loading courses from server.', 'error');
+                console.error(err);
+            });
     }
 
-    function money(value) {
-        const number = Number(value);
+    // Render Table
+    function renderTable(courses) {
+        courseCountBadge.textContent = `${courses.length} Course${courses.length === 1 ? '' : 's'}`;
 
-        if (!Number.isFinite(number)) {
-            return '0.00';
-        }
-
-        return number.toLocaleString('en-LK', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    }
-
-    function showToast(message, type = 'success') {
-        const toast = $('toast');
-
-        clearTimeout(toastTimer);
-
-        toast.className = `toast ${type}`;
-        $('toastIcon').className = type === 'success'
-            ? 'fa-solid fa-circle-check'
-            : 'fa-solid fa-circle-exclamation';
-
-        $('toastMessage').textContent = message;
-
-        toastTimer = setTimeout(() => {
-            toast.classList.add('hidden');
-        }, 4500);
-    }
-
-    async function request(url, options = {}) {
-        const response = await fetch(url, {
-            ...options,
-            headers: {
-                ...(options.body
-                    ? { 'Content-Type': 'application/json' }
-                    : {}),
-                ...options.headers
-            }
-        });
-
-        const text = await response.text();
-
-        if (!response.ok) {
-            throw new Error(
-                text || `Request failed with status ${response.status}`
-            );
-        }
-
-        if (!text.trim()) {
-            return null;
-        }
-
-        try {
-            return JSON.parse(text);
-        } catch {
-            return text;
-        }
-    }
-
-    function courseUrl(id) {
-        return `${API_URL}/${encodeURIComponent(id)}`;
-    }
-
-    function renderEmpty(message, detail = '') {
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="6" class="empty-state">
-                    <i class="fa-regular fa-folder-open"></i>
-                    <strong>${escapeHtml(message)}</strong>
-                    <p>${escapeHtml(detail)}</p>
-                </td>
-            </tr>`;
-    }
-
-    function renderCourses() {
-        $('courseCount').textContent =
-            `${courses.length} ${courses.length === 1 ? 'Course' : 'Courses'}`;
-
-        const totalStudents = courses.reduce(
-            (sum, c) => sum + (Number(c.enrolledStudents) || 0), 0
-        );
-
-        const totalSeats = courses.reduce(
-            (sum, c) => sum + Math.max(
-                0, (Number(c.capacity) || 0) -
-                (Number(c.enrolledStudents) || 0)
-            ), 0
-        );
-
-        $('statCourses').textContent = courses.length.toLocaleString('en-LK');
-        $('statStudents').textContent = totalStudents.toLocaleString('en-LK');
-        $('statSeats').textContent = totalSeats.toLocaleString('en-LK');
-
-        if (courses.length === 0) {
-            renderEmpty(
-                'No courses available yet',
-                'Use the form above to create your first course.'
-            );
+        if (!courses || courses.length === 0) {
+            courseTableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <strong>No courses found</strong>
+                        <p>Get started by creating a new course using the form above.</p>
+                    </td>
+                </tr>
+            `;
             return;
         }
 
-        tableBody.innerHTML = courses.map(course => {
-            const capacity = Math.max(0, Number(course.capacity) || 0);
-            const enrolled = Math.max(
-                0, Number(course.enrolledStudents) || 0
-            );
-
-            const percentage = capacity > 0
-                ? Math.min(100, enrolled / capacity * 100)
-                : 0;
+        courseTableBody.innerHTML = courses.map(course => {
+            const capacity = course.capacity || 0;
+            const enrolled = course.enrolledStudents || 0;
+            const percent = capacity > 0 ? Math.min(Math.round((enrolled / capacity) * 100), 100) : 0;
+            const feeFormatted = Number(course.fee || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
             return `
                 <tr>
                     <td>
-                        <span class="course-badge">
-                            ${escapeHtml(course.courseId)}
-                        </span>
+                        <span class="course-badge">${escapeHtml(course.courseId)}</span>
                     </td>
-
                     <td><strong>${escapeHtml(course.courseName)}</strong></td>
-
-                    <td class="fee-cell">Rs. ${money(course.fee)}</td>
-
-                    <td>${capacity.toLocaleString('en-LK')}</td>
-
+                    <td class="fee-cell">Rs. ${feeFormatted}</td>
+                    <td>${capacity}</td>
                     <td>
                         <div class="enrollment">
-                            <span>${enrolled.toLocaleString('en-LK')}</span>
-                            <span class="progress-track"
-                                  title="${percentage.toFixed(0)}% enrolled">
-                                <span class="progress-fill"
-                                      style="display:block;width:${percentage}%"></span>
-                            </span>
+                            <span>${enrolled} / ${capacity}</span>
+                            <div class="progress-track" title="${percent}% enrolled">
+                                <div class="progress-fill" style="width: ${percent}%"></div>
+                            </div>
                         </div>
                     </td>
-
                     <td>
                         <div class="actions">
-                            <button type="button"
-                                    class="btn-icon btn-edit"
-                                    data-action="edit"
-                                    data-id="${escapeHtml(course.courseId)}"
-                                    aria-label="Edit ${escapeHtml(course.courseId)}"
-                                    title="Edit course">
+                            <button class="btn-icon btn-edit" onclick="prepareEdit('${escapeHtml(course.courseId)}')" title="Edit Course">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
-
-                            <button type="button"
-                                    class="btn-icon btn-delete"
-                                    data-action="delete"
-                                    data-id="${escapeHtml(course.courseId)}"
-                                    aria-label="Delete ${escapeHtml(course.courseId)}"
-                                    title="Delete course">
+                            <button class="btn-icon btn-delete" onclick="deleteCourse('${escapeHtml(course.courseId)}')" title="Delete Course">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
                     </td>
-                </tr>`;
+                </tr>
+            `;
         }).join('');
     }
 
-    async function loadCourses() {
-        $('tableStatus').textContent = 'Loading course data...';
+    // Update Dashboard Stats
+    function updateStats(courses) {
+        const totalCourses = courses.length;
+        let totalEnrolled = 0;
+        let totalCapacity = 0;
 
-        try {
-            const data = await request(API_URL);
-
-            if (!Array.isArray(data)) {
-                throw new Error('The API did not return a course list.');
-            }
-
-            courses = data;
-            renderCourses();
-
-            $('tableStatus').textContent =
-                `Showing ${courses.length} course${courses.length === 1 ? '' : 's'}.`;
-
-        } catch (error) {
-            courses = [];
-            $('statCourses').textContent = '—';
-            $('statStudents').textContent = '—';
-            $('statSeats').textContent = '—';
-
-            $('courseCount').textContent = 'Unavailable';
-
-            renderEmpty(
-                'Unable to load courses',
-                'Check the backend server and API connection, then refresh.'
-            );
-
-            $('tableStatus').textContent = error.message;
-        }
-    }
-
-    function validateCourse(course) {
-        if (!course.courseId || !course.courseName) {
-            return 'Please enter both the course ID and course name.';
-        }
-
-        if (course.fee === '' || !Number.isFinite(Number(course.fee))
-            || Number(course.fee) < 0) {
-            return 'Enter a valid course fee of zero or more.';
-        }
-
-        if (course.capacity === '' ||
-            !Number.isInteger(Number(course.capacity)) ||
-            Number(course.capacity) < 0) {
-            return 'Capacity must be a non-negative whole number.';
-        }
-
-        if (course.enrolledStudents === '' ||
-            !Number.isInteger(Number(course.enrolledStudents)) ||
-            Number(course.enrolledStudents) < 0) {
-            return 'Enrolled students must be a non-negative whole number.';
-        }
-
-        if (Number(course.enrolledStudents) > Number(course.capacity)) {
-            return 'Enrolled students cannot exceed total capacity.';
-        }
-
-        return null;
-    }
-
-    function getFormCourse() {
-        return {
-            courseId: $('courseId').value.trim(),
-            courseName: $('courseName').value.trim(),
-            fee: $('fee').value,
-            capacity: $('capacity').value,
-            enrolledStudents: $('enrolledStudents').value
-        };
-    }
-
-    function resetForm() {
-        form.reset();
-        editingOriginalId = null;
-
-        $('formHeading').textContent = 'Create New Course';
-        $('formDescription').textContent =
-            'Add a new course with all required details.';
-
-        $('formIcon').innerHTML = '<i class="fa-solid fa-plus"></i>';
-        $('editBanner').classList.add('hidden');
-
-        $('courseId').readOnly = false;
-
-        submitButton.innerHTML =
-            '<i class="fa-solid fa-plus"></i> Add Course';
-
-        cancelEditButton.classList.add('hidden');
-        submitButton.disabled = false;
-    }
-
-    function startEdit(courseId) {
-        const course = courses.find(
-            item => String(item.courseId) === courseId
-        );
-
-        if (!course) {
-            showToast('Course not found in the current list.', 'error');
-            return;
-        }
-
-        editingOriginalId = String(course.courseId);
-
-        $('courseId').value = course.courseId;
-        $('courseName').value = course.courseName ?? '';
-        $('fee').value = course.fee ?? '';
-        $('capacity').value = course.capacity ?? 0;
-        $('enrolledStudents').value = course.enrolledStudents ?? 0;
-
-        $('courseId').readOnly = true;
-
-        $('formHeading').textContent = 'Edit Course';
-        $('formDescription').textContent =
-            'Update the details of this existing course.';
-
-        $('formIcon').innerHTML =
-            '<i class="fa-solid fa-pen-to-square"></i>';
-
-        $('editBannerText').textContent =
-            `Editing course: ${course.courseId}`;
-
-        $('editBanner').classList.remove('hidden');
-
-        submitButton.innerHTML =
-            '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
-
-        cancelEditButton.classList.remove('hidden');
-
-        $('courseForm').scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
+        courses.forEach(c => {
+            totalEnrolled += (c.enrolledStudents || 0);
+            totalCapacity += (c.capacity || 0);
         });
 
-        $('courseName').focus();
+        const availableSeats = Math.max(0, totalCapacity - totalEnrolled);
+
+        statCourses.textContent = totalCourses;
+        statStudents.textContent = totalEnrolled;
+        statSeats.textContent = availableSeats;
     }
 
-    form.addEventListener('submit', async event => {
-        event.preventDefault();
-
-        if (requestInProgress) return;
-
-        const raw = getFormCourse();
-        const error = validateCourse(raw);
-
-        if (error) {
-            showToast(error, 'error');
-            return;
-        }
+    // Form Submit (Add or Update)
+    courseForm.addEventListener('submit', function (e) {
+        e.preventDefault();
 
         const course = {
-            courseId: raw.courseId,
-            courseName: raw.courseName,
-            fee: Number(raw.fee),
-            capacity: Number(raw.capacity),
-            enrolledStudents: Number(raw.enrolledStudents)
+            courseId: courseIdInput.value.trim(),
+            courseName: courseNameInput.value.trim(),
+            fee: parseFloat(feeInput.value),
+            capacity: parseInt(capacityInput.value),
+            enrolledStudents: parseInt(enrolledStudentsInput.value) || 0
         };
 
-        const isEditing = editingOriginalId !== null;
+        const url = API_BASE;
+        const method = isEditMode ? 'PUT' : 'POST';
 
-        if (!isEditing && courses.some(
-            item => String(item.courseId).toLowerCase() ===
-                course.courseId.toLowerCase()
-        )) {
-            showToast('A course with this ID already exists.', 'error');
-            return;
-        }
-
-        const originalButtonHTML = submitButton.innerHTML;
-
-        requestInProgress = true;
-        submitButton.disabled = true;
-        cancelEditButton.disabled = true;
-
-        submitButton.innerHTML =
-            '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-
-        try {
-            if (isEditing) {
-                // Requires PUT /api/courses/{courseId} on the backend.
-                await request(courseUrl(editingOriginalId), {
-                    method: 'PUT',
-                    body: JSON.stringify(course)
-                });
-
+        fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(course)
+        })
+            .then(async res => {
+                const text = await res.text();
+                if (!res.ok) throw new Error(text || 'Operation failed');
+                return text;
+            })
+            .then(msg => {
+                showToast(msg || (isEditMode ? 'Course updated successfully!' : 'Course added successfully!'), 'success');
                 resetForm();
-                await loadCourses();
-
-                showToast('Course updated successfully.');
-            } else {
-                await request(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(course)
-                });
-
-                resetForm();
-                await loadCourses();
-
-                showToast('Course added successfully.');
-            }
-        } catch (error) {
-            showToast(
-                (isEditing ? 'Unable to update course: ' :
-                    'Unable to add course: ') + error.message,
-                'error'
-            );
-        } finally {
-            requestInProgress = false;
-            submitButton.disabled = false;
-            cancelEditButton.disabled = false;
-
-            if (editingOriginalId === null) {
-                submitButton.innerHTML =
-                    '<i class="fa-solid fa-plus"></i> Add Course';
-            } else {
-                submitButton.innerHTML = originalButtonHTML;
-            }
-        }
+                loadCourses();
+            })
+            .catch(err => {
+                showToast(err.message || 'An error occurred.', 'error');
+            });
     });
 
+    // Prepare Edit Mode
+    window.prepareEdit = function(id) {
+        const course = coursesData.find(c => c.courseId === id);
+        if (!course) return;
+
+        isEditMode = true;
+        courseIdInput.value = course.courseId;
+        courseIdInput.readOnly = true; // Cannot change ID during edit
+        courseNameInput.value = course.courseName;
+        feeInput.value = course.fee;
+        capacityInput.value = course.capacity;
+        enrolledStudentsInput.value = course.enrolledStudents;
+
+        formHeading.textContent = `Editing course: ${course.courseId}`;
+        formDescription.textContent = 'Modify course details and save changes.';
+        formIcon.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+        submitButton.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Changes';
+        cancelEditButton.classList.remove('hidden');
+        editBanner.classList.remove('hidden');
+        editBannerText.textContent = `Currently editing course ID: ${course.courseId}`;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Cancel Edit
     cancelEditButton.addEventListener('click', resetForm);
 
-    $('searchForm').addEventListener('submit', async event => {
-        event.preventDefault();
+    function resetForm() {
+        isEditMode = false;
+        courseForm.reset();
+        courseIdInput.readOnly = false;
+        enrolledStudentsInput.value = '0';
 
-        const id = $('searchId').value.trim();
+        formHeading.textContent = 'Create New Course';
+        formDescription.textContent = 'Add a new course with all required details.';
+        formIcon.innerHTML = '<i class="fa-solid fa-plus"></i>';
+        submitButton.innerHTML = '<i class="fa-solid fa-plus"></i> Add Course';
+        cancelEditButton.classList.add('hidden');
+        editBanner.classList.add('hidden');
+    }
 
+    // Delete Course
+    window.deleteCourse = function(id) {
+        if (!confirm(`Are you sure you want to delete course "${id}"?`)) return;
+
+        fetch(`${API_BASE}/${encodeURIComponent(id)}`, {
+            method: 'DELETE'
+        })
+            .then(async res => {
+                const text = await res.text();
+                if (!res.ok) throw new Error(text || 'Failed to delete');
+                return text;
+            })
+            .then(msg => {
+                showToast(msg || 'Course deleted successfully!', 'success');
+                loadCourses();
+            })
+            .catch(err => {
+                showToast(err.message || 'Error deleting course.', 'error');
+            });
+    };
+
+    // Search Course
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = searchIdInput.value.trim();
         if (!id) return;
 
-        const button = event.submitter;
-        if (button) button.disabled = true;
+        searchResult.innerHTML = `
+            <div class="result-card">
+                <div class="result-title"><i class="fa-solid fa-spinner fa-spin"></i> Searching...</div>
+            </div>
+        `;
 
-        $('searchResult').innerHTML = `
-            <div class="search-placeholder">
-                <i class="fa-solid fa-spinner fa-spin"></i>
-                <strong>Searching courses...</strong>
-            </div>`;
-
-        try {
-            const course = await request(courseUrl(id));
-
-            if (!course || typeof course !== 'object') {
-                throw new Error('Course not found.');
-            }
-
-            $('searchResult').innerHTML = `
-                <div class="result-card">
-                    <div class="result-title">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>${escapeHtml(course.courseName)}</span>
-                    </div>
-
-                    <div class="result-meta">
-                        <div>
-                            <span>Course ID</span>
-                            <strong>${escapeHtml(course.courseId)}</strong>
+        fetch(`${API_BASE}/${encodeURIComponent(id)}`)
+            .then(async res => {
+                if (!res.ok) {
+                    throw new Error('Course Not Found');
+                }
+                return res.json();
+            })
+            .then(course => {
+                const feeFormatted = Number(course.fee || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+                searchResult.innerHTML = `
+                    <div class="result-card">
+                        <div class="result-title">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <div>
+                                <strong>${escapeHtml(course.courseName)}</strong>
+                                <div style="font-size: .75rem; color: var(--muted); margin-top:2px;">ID: ${escapeHtml(course.courseId)}</div>
+                            </div>
                         </div>
-                        <div>
-                            <span>Course Fee</span>
-                            <strong>Rs. ${money(course.fee)}</strong>
-                        </div>
-                        <div>
-                            <span>Total Capacity</span>
-                            <strong>${escapeHtml(course.capacity)}</strong>
-                        </div>
-                        <div>
-                            <span>Enrolled Students</span>
-                            <strong>${escapeHtml(course.enrolledStudents)}</strong>
+                        <div class="result-meta">
+                            <div>
+                                <span>Course Fee</span>
+                                <strong>Rs. ${feeFormatted}</strong>
+                            </div>
+                            <div>
+                                <span>Capacity / Enrolled</span>
+                                <strong>${course.enrolledStudents || 0} / ${course.capacity || 0}</strong>
+                            </div>
                         </div>
                     </div>
-                </div>`;
-
-        } catch (error) {
-            $('searchResult').innerHTML = `
-                <div class="result-card error">
-                    <div class="result-title">
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                        <span>${escapeHtml(error.message || 'Course not found.')}</span>
+                `;
+            })
+            .catch(() => {
+                searchResult.innerHTML = `
+                    <div class="result-card error">
+                        <div class="result-title">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                            <div>
+                                <strong>Course Not Found</strong>
+                                <div style="font-size: .75rem; margin-top: 2px;">No course exists with ID "${escapeHtml(id)}".</div>
+                            </div>
+                        </div>
                     </div>
-                </div>`;
-        } finally {
-            if (button) button.disabled = false;
-        }
-    });
-
-    tableBody.addEventListener('click', async event => {
-        const button = event.target.closest('button[data-action]');
-
-        if (!button || button.disabled || requestInProgress) return;
-
-        const courseId = button.dataset.id;
-        const action = button.dataset.action;
-
-        if (action === 'edit') {
-            startEdit(courseId);
-            return;
-        }
-
-        if (action !== 'delete') return;
-
-        const confirmed = confirm(
-            `Permanently delete course "${courseId}"? This action cannot be undone.`
-        );
-
-        if (!confirmed) return;
-
-        button.disabled = true;
-
-        try {
-            await request(courseUrl(courseId), {
-                method: 'DELETE'
+                `;
             });
-
-            if (editingOriginalId === courseId) {
-                resetForm();
-            }
-
-            await loadCourses();
-
-            showToast(`Course ${courseId} deleted successfully.`);
-        } catch (error) {
-            showToast('Unable to delete course: ' + error.message, 'error');
-            button.disabled = false;
-        }
     });
 
-    loadCourses();
+    // Toast Notifications
+    function showToast(message, type = 'success') {
+        const existingToast = document.querySelector('.toast');
+        if (existingToast) existingToast.remove();
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+            <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}"></i>
+            <div>${escapeHtml(message)}</div>
+        `;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity .3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+
+    // Utility escape function
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/"""/g, '&quot;')
+            .replace(/'/g, '&#039;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
 </script>
 
 </body>

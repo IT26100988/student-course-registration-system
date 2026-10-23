@@ -38,6 +38,18 @@ public class CourseController {
         return "Course Added Successfully";
     }
 
+    @PutMapping
+    public String updateCourse(
+            @RequestBody Course course) {
+
+        boolean updated =
+                service.updateCourse(course);
+
+        return updated
+                ? "Course Updated Successfully"
+                : "Course Not Found";
+    }
+
     @DeleteMapping("/{id}")
     public String deleteCourse(
             @PathVariable String id) {
