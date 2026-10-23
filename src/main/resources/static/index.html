@@ -7,12 +7,23 @@
 
         body{
             font-family: Arial;
-            margin:40px;
+            margin: 40px;
+        }
+
+        input{
+            padding:8px;
+            margin:5px;
+        }
+
+        button{
+            padding:8px 15px;
+            cursor:pointer;
         }
 
         table{
             width:100%;
             border-collapse: collapse;
+            margin-top:20px;
         }
 
         th,td{
@@ -21,11 +32,7 @@
         }
 
         th{
-            background:#e5e5e5;
-        }
-
-        button{
-            padding:5px 10px;
+            background:#eeeeee;
         }
 
     </style>
@@ -35,54 +42,125 @@
 
 <h1>Course Management</h1>
 
+<h3>Add Course</h3>
+
+<input type="text" id="courseId" placeholder="Course ID">
+
+<input type="text" id="courseName" placeholder="Course Name">
+
+<input type="number" id="fee" placeholder="Fee">
+
+<input type="number" id="capacity" placeholder="Capacity">
+
+<input type="number" id="enrolledStudents"
+       placeholder="Enrolled">
+
+<button onclick="addCourse()">
+    Add Course
+</button>
+
 <table id="courseTable">
 
     <thead>
-
     <tr>
-
         <th>ID</th>
         <th>Name</th>
         <th>Fee</th>
         <th>Capacity</th>
         <th>Enrolled</th>
-
     </tr>
-
     </thead>
 
-    <tbody>
-
-    </tbody>
+    <tbody></tbody>
 
 </table>
 
 <script>
 
-    fetch('/api/courses')
-        .then(response => response.json())
-        .then(data => {
+    loadCourses();
 
-            let tableBody =
-                document.querySelector("#courseTable tbody");
+    function loadCourses(){
 
-            data.forEach(course => {
+        fetch('/api/courses')
+            .then(response => response.json())
+            .then(data => {
 
-                let row = `
-        <tr>
-            <td>${course.courseId}</td>
-            <td>${course.courseName}</td>
-            <td>${course.fee}</td>
-            <td>${course.capacity}</td>
-            <td>${course.enrolledStudents}</td>
-        </tr>
-        `;
+                let tableBody =
+                    document.querySelector(
+                        "#courseTable tbody"
+                    );
 
-                tableBody.innerHTML += row;
+                tableBody.innerHTML = "";
+
+                data.forEach(course => {
+
+                    tableBody.innerHTML += `
+                    <tr>
+                        <td>${course.courseId}</td>
+                        <td>${course.courseName}</td>
+                        <td>${course.fee}</td>
+                        <td>${course.capacity}</td>
+                        <td>${course.enrolledStudents}</td>
+                    </tr>
+                `;
+
+                });
 
             });
 
-        });
+    }
+
+    function addCourse(){
+
+        let course = {
+
+            courseId:
+            document.getElementById(
+                "courseId").value,
+
+            courseName:
+            document.getElementById(
+                "courseName").value,
+
+            fee:
+                parseFloat(
+                    document.getElementById(
+                        "fee").value),
+
+            capacity:
+                parseInt(
+                    document.getElementById(
+                        "capacity").value),
+
+            enrolledStudents:
+                parseInt(
+                    document.getElementById(
+                        "enrolledStudents").value)
+        };
+
+        fetch('/api/courses',{
+
+            method:'POST',
+
+            headers:{
+                'Content-Type':
+                    'application/json'
+            },
+
+            body:
+                JSON.stringify(course)
+
+        })
+            .then(response => response.text())
+            .then(data => {
+
+                alert(data);
+
+                location.reload();
+
+            });
+
+    }
 
 </script>
 
