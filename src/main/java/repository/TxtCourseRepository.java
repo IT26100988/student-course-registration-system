@@ -2,7 +2,9 @@ package repository;
 
 import model.Course;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +41,40 @@ public class TxtCourseRepository implements CourseRepository {
 
     @Override
     public List<Course> getAllCourses() {
-        return new ArrayList<>();
+
+        List<Course> courses = new ArrayList<>();
+
+        try (
+                BufferedReader reader =
+                        new BufferedReader(
+                                new FileReader(FILE_PATH))
+        ) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+
+                String[] data = line.split(",");
+
+                if (data.length == 5) {
+
+                    Course course =
+                            new Course(
+                                    data[0],
+                                    data[1],
+                                    Double.parseDouble(data[2]),
+                                    Integer.parseInt(data[3]),
+                                    Integer.parseInt(data[4])
+                            );
+
+                    courses.add(course);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return courses;
     }
 }

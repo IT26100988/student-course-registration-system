@@ -15,17 +15,26 @@ public class CourseController {
 
         Course course =
                 new Course(
-                        "C004",
-                        "Java Advanced",
-                        35000,
-                        30,
-                        10
+                        "C005",
+                        "Spring Boot",
+                        40000,
+                        25,
+                        8
                 );
 
         service.addCourse(course);
 
-        System.out.println(
-                "Course Saved Successfully!"
-        );
+        System.out.println("Course Saved Successfully!");
+
+        System.out.println("\nAll Courses");
+
+        for (Course c : service.getAllCourses()) {
+
+            System.out.println(
+                    c.getCourseId() + " | " +
+                            c.getCourseName() + " | " +
+                            c.getFee()
+            );
+        }
     }
 }
