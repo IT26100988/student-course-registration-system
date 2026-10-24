@@ -1,8 +1,8 @@
-package com.example.studentregistrationsystem.controller;
+package com.example.studentregistration.Course.controller;
 
-import com.example.studentregistrationsystem.model.Course;
-import com.example.studentregistrationsystem.repository.TxtCourseRepository;
-import com.example.studentregistrationsystem.service.CourseCatalogService;
+import com.example.studentregistration.Course.model.Course;
+import com.example.studentregistration.Course.repository.TxtCourseRepository;
+import com.example.studentregistration.Course.service.CourseCatalogService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

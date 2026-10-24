@@ -1,6 +1,6 @@
-package com.example.studentregistrationsystem.repository;
+package com.example.studentregistration.Course.repository;
 
-import com.example.studentregistrationsystem.model.Course;
+import com.example.studentregistration.Course.model.Course;
 
 import java.io.*;
 import java.util.ArrayList;

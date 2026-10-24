@@ -1,7 +1,7 @@
-package com.example.studentregistrationsystem.service;
+package com.example.studentregistration.Course.service;
 
-import com.example.studentregistrationsystem.model.Course;
-import com.example.studentregistrationsystem.repository.CourseRepository;
+import com.example.studentregistration.Course.model.Course;
+import com.example.studentregistration.Course.repository.CourseRepository;
 
 import java.util.ArrayList;
 import java.util.List;

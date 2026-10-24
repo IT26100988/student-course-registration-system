@@ -1,4 +1,4 @@
-package com.example.studentregistrationsystem.model;
+package com.example.studentregistration.Course.model;
 
 public class StandardCourse extends Course {
 
