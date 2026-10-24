@@ -10,7 +10,7 @@ public class Invoice {
     private String offeringId;
     private String currency;
     private BigDecimal totalAmount;
-    private InvoiceStatus status; // Enum
+    private InvoiceStatus status; 
     private Instant issuedAt;
     private Instant paidAt;
     private Instant voidedAt;
