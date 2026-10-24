@@ -9,7 +9,6 @@ public class Lecturer {
 
     public Lecturer() {
     }
-
     public Lecturer(String lecturerId, String fullName, String email,
                     String department, RecordStatus status) {
         this.lecturerId = lecturerId;
