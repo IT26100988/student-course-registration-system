@@ -1,4 +1,4 @@
-package com.example.studentregistration.registration.model;
+package com.example.studentregistration.model;
 
 public abstract class User {
 
