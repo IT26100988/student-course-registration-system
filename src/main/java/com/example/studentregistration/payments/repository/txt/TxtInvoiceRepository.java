@@ -93,7 +93,7 @@ public class TxtInvoiceRepository implements InvoiceRepository {
 
     private void writeAll(List<Invoice> invoices) {
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(FILE_PATH), StandardCharsets.UTF_8))) {
-            bw.write("#SCHEMA|invoices|1\n"); // Header එක
+            bw.write("#SCHEMA|invoices|1\n"); 
             for (Invoice inv : invoices) {
                 String line = String.join("|",
                         inv.getInvoiceId(),
