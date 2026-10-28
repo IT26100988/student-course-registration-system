@@ -15,7 +15,7 @@ public class Invoice {
     private Instant paidAt;
     private Instant voidedAt;
 
-    // Composition: Invoice owns InvoiceLine
+
     private InvoiceLine line;
 
     public Invoice() {
@@ -33,7 +33,7 @@ public class Invoice {
         this.line = line;
     }
 
-    // Getters and Setters
+
     public String getInvoiceId() { return invoiceId; }
     public void setInvoiceId(String invoiceId) { this.invoiceId = invoiceId; }
 

@@ -33,7 +33,7 @@ public class Payment {
         this.submittedAt = submittedAt;
     }
 
-    // Getters and Setters
+
     public String getPaymentId() { return paymentId; }
     public void setPaymentId(String paymentId) { this.paymentId = paymentId; }
 

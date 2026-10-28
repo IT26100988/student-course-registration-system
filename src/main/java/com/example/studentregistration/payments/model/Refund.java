@@ -31,7 +31,7 @@ public class Refund {
         this.requestedAt = requestedAt;
     }
 
-    // Getters and Setters
+
     public String getRefundId() { return refundId; }
     public void setRefundId(String refundId) { this.refundId = refundId; }
 
