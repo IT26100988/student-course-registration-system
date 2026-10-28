@@ -14,14 +14,12 @@ public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
 
-
     public InvoiceService(InvoiceRepository invoiceRepository) {
         this.invoiceRepository = invoiceRepository;
     }
 
     public Invoice createInvoice(String enrollmentId, String studentId, String offeringId, BigDecimal amount) {
         Invoice invoice = new Invoice();
-
         invoice.setInvoiceId("INV_" + UUID.randomUUID().toString());
         invoice.setEnrollmentId(enrollmentId);
         invoice.setStudentId(studentId);
@@ -30,7 +28,6 @@ public class InvoiceService {
         invoice.setTotalAmount(amount);
         invoice.setStatus(InvoiceStatus.ISSUED);
         invoice.setIssuedAt(Instant.now());
-
 
         InvoiceLine line = new InvoiceLine(
                 "LIN_" + UUID.randomUUID().toString(),

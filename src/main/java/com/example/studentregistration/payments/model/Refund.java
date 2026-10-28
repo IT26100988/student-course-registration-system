@@ -10,7 +10,7 @@ public class Refund {
     private BigDecimal amount;
     private String currency;
     private String reason;
-    private RefundStatus status; // Enum
+    private RefundStatus status;
     private Instant requestedAt;
     private Instant decidedAt;
     private String decidedByAdminId;
@@ -30,7 +30,6 @@ public class Refund {
         this.status = status;
         this.requestedAt = requestedAt;
     }
-
 
     public String getRefundId() { return refundId; }
     public void setRefundId(String refundId) { this.refundId = refundId; }
