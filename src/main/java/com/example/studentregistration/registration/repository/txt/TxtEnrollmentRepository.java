@@ -26,7 +26,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
     private static final String HEADER = "#SCHEMA|enrollments|1";
     private final Path file;
 
-    // Constructor
     public TxtEnrollmentRepository(
             @Value("${app.storage.dir:data}") String storageDir) {
 
@@ -34,13 +33,11 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
                 .resolve("enrollments.txt").toAbsolutePath();
     }
 
-    // READ - Get all enrollments
     @Override
     public synchronized ArrayList<Enrollment> findAll() {
         return readAll();
     }
 
-    // READ - Search by enrollment ID
     @Override
     public synchronized Optional<Enrollment> findById(String enrollmentId) {
 
@@ -53,7 +50,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
         return Optional.empty();
     }
 
-    // CREATE - Save a new enrollment
     @Override
     public synchronized void save(Enrollment enrollment) {
 
@@ -74,7 +70,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
         writeAll(enrollments);
     }
 
-    // UPDATE - Update existing enrollment
     @Override
     public synchronized void update(Enrollment enrollment) {
 
@@ -87,7 +82,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
 
             if (old.getEnrollmentId().equals(enrollment.getEnrollmentId())) {
 
-                // Identity and creation time cannot change
                 if (!old.getRequestId().equals(enrollment.getRequestId())
                         || !old.getStudentId().equals(enrollment.getStudentId())
                         || !old.getOfferingId().equals(enrollment.getOfferingId())
@@ -107,7 +101,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
                 "Enrollment not found: " + enrollment.getEnrollmentId());
     }
 
-    // Create TXT file with schema header if missing
     private void initializeFile() {
 
         try {
@@ -124,7 +117,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
                     writer.newLine();
 
                 } catch (FileAlreadyExistsException ignored) {
-                    // Another call created the file.
                 }
             }
 
@@ -134,7 +126,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
         }
     }
 
-    // Load TXT records into ArrayList
     private ArrayList<Enrollment> readAll() {
 
         initializeFile();
@@ -186,7 +177,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
         return enrollments;
     }
 
-    // Convert one TXT line into an Enrollment object
     private Enrollment parse(String line) {
 
         String[] fields = line.split("\\|", -1);
@@ -225,7 +215,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
         );
     }
 
-    // Rewrite complete ArrayList into TXT
     private void writeAll(ArrayList<Enrollment> enrollments) {
 
         Path temp = null;
@@ -290,14 +279,12 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
         }
     }
 
-    // URL encode a field
     private static String encode(Object value) {
 
         return value == null ? "" : URLEncoder.encode(
                 value.toString(), StandardCharsets.UTF_8);
     }
 
-    // Parse an optional UTC timestamp
     private static Instant timestamp(String value) {
 
         if (value == null) {
@@ -312,7 +299,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
         return Instant.parse(value);
     }
 
-    // Check mandatory fields
     private static String required(String value) {
 
         if (value == null || value.isBlank()) {
@@ -323,7 +309,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
         return value;
     }
 
-    // Validate enrollment
     private static void validate(Enrollment enrollment) {
 
         if (enrollment == null) {
@@ -353,7 +338,6 @@ public class TxtEnrollmentRepository implements EnrollmentRepository {
         }
     }
 
-    // Validate UUIDv4 identifiers
     private static void checkId(String id, String prefix) {
 
         if (id == null || !id.matches(prefix

@@ -29,7 +29,6 @@ public class TxtRegistrationRequestRepository
 
     private final Path file;
 
-    // Constructor
     public TxtRegistrationRequestRepository(
             @Value("${app.storage.dir:data}") String storageDir) {
 
@@ -37,13 +36,12 @@ public class TxtRegistrationRequestRepository
                 storageDir, "registration_requests.txt");
     }
 
-    // READ - Get all requests
     @Override
     public synchronized ArrayList<RegistrationRequest> findAll() {
         return readAll();
     }
 
-    // READ - Search by request ID
+
     @Override
     public synchronized Optional<RegistrationRequest> findById(
             String requestId) {
@@ -57,7 +55,6 @@ public class TxtRegistrationRequestRepository
         return Optional.empty();
     }
 
-    // CREATE - Save new request
     @Override
     public synchronized void save(RegistrationRequest request) {
 
@@ -78,7 +75,6 @@ public class TxtRegistrationRequestRepository
         writeAll(requests);
     }
 
-    // UPDATE - Update existing request
     @Override
     public synchronized void update(RegistrationRequest request) {
 
@@ -92,7 +88,6 @@ public class TxtRegistrationRequestRepository
 
             if (old.getRequestId().equals(request.getRequestId())) {
 
-                // Identity and FIFO order must not change
                 if (!old.getStudentId().equals(request.getStudentId())
                         || !old.getOfferingId().equals(request.getOfferingId())
                         || old.getSequenceNo() != request.getSequenceNo()
@@ -112,7 +107,6 @@ public class TxtRegistrationRequestRepository
                 "Request not found: " + request.getRequestId());
     }
 
-    // Create file with schema header on first use
     private void initializeFile() {
 
         try {
@@ -129,7 +123,6 @@ public class TxtRegistrationRequestRepository
                     writer.newLine();
 
                 } catch (FileAlreadyExistsException ignored) {
-                    // Another call created it; readAll checks header.
                 }
             }
 
@@ -139,7 +132,6 @@ public class TxtRegistrationRequestRepository
         }
     }
 
-    // Load TXT records into ArrayList
     private ArrayList<RegistrationRequest> readAll() {
 
         initializeFile();
@@ -191,7 +183,6 @@ public class TxtRegistrationRequestRepository
         return requests;
     }
 
-    // Convert one TXT line into a Java object
     private RegistrationRequest parse(String line) {
 
         String[] parts = line.split("\\|", -1);
@@ -230,7 +221,6 @@ public class TxtRegistrationRequestRepository
         );
     }
 
-    // Rewrite TXT using a temporary file
     private void writeAll(ArrayList<RegistrationRequest> requests) {
 
         Path temp = null;
@@ -295,7 +285,6 @@ public class TxtRegistrationRequestRepository
         }
     }
 
-    // Encode values for TXT storage
     private static String encode(Object value) {
 
         return value == null
@@ -304,7 +293,6 @@ public class TxtRegistrationRequestRepository
                 value.toString(), StandardCharsets.UTF_8);
     }
 
-    // Parse optional UTC timestamp
     private static Instant parseInstant(String value) {
 
         if (value == null) {
@@ -319,7 +307,6 @@ public class TxtRegistrationRequestRepository
         return Instant.parse(value);
     }
 
-    // Validate required field
     private static String required(String value) {
 
         if (value == null || value.isBlank()) {
@@ -330,7 +317,6 @@ public class TxtRegistrationRequestRepository
         return value;
     }
 
-    // Validate mandatory request fields
     private static void validate(RegistrationRequest request) {
 
         if (request == null) {
@@ -350,7 +336,6 @@ public class TxtRegistrationRequestRepository
         }
     }
 
-    // Validate contract UUIDv4 identifiers
     private static void checkId(String id, String prefix) {
 
         if (id == null || !id.matches(prefix
