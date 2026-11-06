@@ -1,0 +1,55 @@
+
+# =====================================
+# Maven and compiled files
+# =====================================
+/target/
+/out/
+/build/
+*.class
+
+# =====================================
+# IntelliJ IDEA and other IDE files
+# =====================================
+/.idea/
+*.iml
+/.settings/
+/.project
+/.classpath
+/.factorypath
+
+# =====================================
+# Operating system files
+# =====================================
+.DS_Store
+Thumbs.db
+
+# =====================================
+# Private TXT storage
+# =====================================
+/data/**
+!/data/.gitkeep
+
+# =====================================
+# Environment and secret files
+# =====================================
+.env
+.env.*
+!.env.example
+
+*.pem
+*.p12
+*.key
+
+/src/main/resources/application-local.properties
+/src/main/resources/application-secrets.properties
+
+# =====================================
+# Logs and temporary files
+# =====================================
+*.log
+*.tmp
+*.bak
+*.backup
+*.swp
+*.swo
+*.lock
