@@ -43,8 +43,8 @@ public class RegistrationService {
 
         String studentId = "STU_" + UUID.randomUUID();
 
-        // Password hashing method needs leader approval.
-        String passwordHash = null;
+        // Store password without encryption
+        String password = request.getPassword();
 
         String currentTime = Instant.now().toString();
 
@@ -52,7 +52,7 @@ public class RegistrationService {
                 studentId,
                 request.getFullName(),
                 request.getEmail(),
-                passwordHash,
+                password,
                 AccountStatus.ACTIVE,
                 currentTime,
                 currentTime,

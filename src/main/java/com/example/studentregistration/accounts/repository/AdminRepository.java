@@ -8,13 +8,24 @@ import java.util.Optional;
 
 public interface AdminRepository {
 
+    // Create
     void save(Admin admin) throws FileStorageException;
 
-    Optional<Admin> findById(String id) throws FileStorageException;
+    // Read
+    Optional<Admin> findById(String id)
+            throws FileStorageException;
 
-    List<Admin> findAll() throws FileStorageException;
+    Optional<Admin> findByEmail(String email)
+            throws FileStorageException;
 
-    boolean update(String id, Admin updatedAdmin) throws FileStorageException;
+    List<Admin> findAll()
+            throws FileStorageException;
 
-    boolean deleteById(String id) throws FileStorageException;
+    // Update
+    boolean update(String id, Admin updatedAdmin)
+            throws FileStorageException;
+
+    // Delete
+    boolean deleteById(String id)
+            throws FileStorageException;
 }

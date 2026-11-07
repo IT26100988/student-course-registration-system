@@ -30,6 +30,7 @@ public class TxtAdminRepository implements AdminRepository {
         this.storageLockManager = storageLockManager;
     }
 
+    // Create Admin
     @Override
     public void save(Admin admin) throws FileStorageException {
 
@@ -57,6 +58,7 @@ public class TxtAdminRepository implements AdminRepository {
         });
     }
 
+    // Find Admin by ID
     @Override
     public Optional<Admin> findById(String id)
             throws FileStorageException {
@@ -79,6 +81,30 @@ public class TxtAdminRepository implements AdminRepository {
         });
     }
 
+    // Find Admin by Email
+    @Override
+    public Optional<Admin> findByEmail(String email)
+            throws FileStorageException {
+
+        return storageLockManager.withFileLock("admins", () -> {
+
+            ArrayList<String> records =
+                    txtFileStore.readRecords("admins");
+
+            for (String record : records) {
+
+                Admin admin = convertToAdmin(record);
+
+                if (admin.getEmail().equalsIgnoreCase(email)) {
+                    return Optional.of(admin);
+                }
+            }
+
+            return Optional.empty();
+        });
+    }
+
+    // Read All Admins
     @Override
     public List<Admin> findAll() throws FileStorageException {
 
@@ -97,6 +123,7 @@ public class TxtAdminRepository implements AdminRepository {
         });
     }
 
+    // Update Admin
     @Override
     public boolean update(String id, Admin updatedAdmin)
             throws FileStorageException {
@@ -128,6 +155,7 @@ public class TxtAdminRepository implements AdminRepository {
         });
     }
 
+    // Delete Admin
     @Override
     public boolean deleteById(String id)
             throws FileStorageException {
@@ -159,6 +187,7 @@ public class TxtAdminRepository implements AdminRepository {
         });
     }
 
+    // Convert Admin object to TXT record
     private String convertToRecord(Admin admin)
             throws FileStorageException {
 
@@ -175,6 +204,7 @@ public class TxtAdminRepository implements AdminRepository {
         return TxtCodec.encodeRecord(fields);
     }
 
+    // Convert TXT record to Admin object
     private Admin convertToAdmin(String record)
             throws FileStorageException {
 

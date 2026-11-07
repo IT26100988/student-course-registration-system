@@ -168,6 +168,42 @@ public class StudentService {
         return Optional.of(convertToResponse(student));
     }
 
+    // Change student password
+    public boolean changeStudentPassword(
+            String id,
+            String currentPassword,
+            String newPassword)
+            throws FileStorageException {
+
+        Optional<Student> optionalStudent =
+                studentRepository.findById(id);
+
+        if (optionalStudent.isEmpty()) {
+            return false;
+        }
+
+        Student student = optionalStudent.get();
+
+        // Check current password
+        if (student.getPasswordHash() == null
+                || !student.getPasswordHash().equals(currentPassword)) {
+
+            throw new IllegalArgumentException(
+                    "Current password is incorrect");
+        }
+
+        // Validate new password
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new IllegalArgumentException(
+                    "New password must contain at least 8 characters");
+        }
+
+        // Update password
+        student.setPasswordHash(newPassword);
+
+        return studentRepository.update(id, student);
+    }
+
     // Search students
     private boolean matchesQuery(Student student, String query) {
 

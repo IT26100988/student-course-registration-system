@@ -12,16 +12,22 @@ public interface StudentRepository {
     void save(Student student) throws FileStorageException;
 
     // Read
-    Optional<Student> findById(String id) throws FileStorageException;
+    Optional<Student> findById(String id)
+            throws FileStorageException;
 
-    List<Student> findAll() throws FileStorageException;
+    Optional<Student> findByEmail(String email)
+            throws FileStorageException;
+
+    List<Student> findAll()
+            throws FileStorageException;
 
     // Update
     boolean update(String id, Student updatedStudent)
             throws FileStorageException;
 
     // Delete
-    boolean deleteById(String id) throws FileStorageException;
+    boolean deleteById(String id)
+            throws FileStorageException;
 
     // Duplicate Checking
     boolean existsByStudentNo(String studentNo)

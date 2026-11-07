@@ -3,7 +3,6 @@ package com.example.studentregistration.accounts.repository.txt;
 import com.example.studentregistration.accounts.model.AccountStatus;
 import com.example.studentregistration.accounts.model.Student;
 import com.example.studentregistration.accounts.repository.StudentRepository;
-
 import com.example.studentregistration.shared.exception.FileStorageException;
 import com.example.studentregistration.shared.filehandling.TxtCodec;
 import com.example.studentregistration.shared.filehandling.TxtFileStore;
@@ -59,7 +58,7 @@ public class TxtStudentRepository implements StudentRepository {
         });
     }
 
-    // Read by ID
+    // Find by ID
     @Override
     public Optional<Student> findById(String id)
             throws FileStorageException {
@@ -74,6 +73,29 @@ public class TxtStudentRepository implements StudentRepository {
                 Student student = convertToStudent(record);
 
                 if (student.getId().equals(id)) {
+                    return Optional.of(student);
+                }
+            }
+
+            return Optional.empty();
+        });
+    }
+
+    // Find by Email
+    @Override
+    public Optional<Student> findByEmail(String email)
+            throws FileStorageException {
+
+        return storageLockManager.withFileLock("students", () -> {
+
+            ArrayList<String> records =
+                    txtFileStore.readRecords("students");
+
+            for (String record : records) {
+
+                Student student = convertToStudent(record);
+
+                if (student.getEmail().equalsIgnoreCase(email)) {
                     return Optional.of(student);
                 }
             }
