@@ -76,6 +76,13 @@ public class StudentService {
                 .orElseThrow(() -> new StudentNotFoundException("Student not found: " + studentId));
     }
 
+    public Optional<Student> findByEmail(String email) {
+        if (email == null || email.isBlank()) {
+            return Optional.empty();
+        }
+        return studentRepository.findByEmail(email.trim().toLowerCase());
+    }
+
     /** UPDATE — profile (fullName, email). */
     public Student updateProfile(String studentId, String fullName, String email) {
         Student existing = findById(studentId);
