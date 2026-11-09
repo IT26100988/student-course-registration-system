@@ -1,20 +1,26 @@
 package com.example.studentregistration.accounts.repository;
 
 import com.example.studentregistration.accounts.model.Admin;
-import com.example.studentregistration.shared.exception.FileStorageException;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository contract for Admin persistence.
+ * TxtAdminRepository will implement this in a later step.
+ */
 public interface AdminRepository {
 
-    void save(Admin admin) throws FileStorageException;
+    List<Admin> findAll();
 
-    Optional<Admin> findById(String id) throws FileStorageException;
+    Optional<Admin> findById(String adminId);
 
-    List<Admin> findAll() throws FileStorageException;
+    Optional<Admin> findByEmail(String email);
 
-    boolean update(String id, Admin updatedAdmin) throws FileStorageException;
+    Admin save(Admin admin);
 
-    boolean deleteById(String id) throws FileStorageException;
+    Admin update(Admin admin);
+
+    /** true if at least one ACTIVE admin exists (for bootstrap guard). */
+    boolean existsAnyActiveAdmin();
 }

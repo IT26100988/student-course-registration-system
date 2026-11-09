@@ -3,247 +3,181 @@ package com.example.studentregistration.accounts.repository.txt;
 import com.example.studentregistration.accounts.model.AccountStatus;
 import com.example.studentregistration.accounts.model.Student;
 import com.example.studentregistration.accounts.repository.StudentRepository;
-
-import com.example.studentregistration.shared.exception.FileStorageException;
-import com.example.studentregistration.shared.filehandling.TxtCodec;
-import com.example.studentregistration.shared.filehandling.TxtFileStore;
-import com.example.studentregistration.shared.filehandling.StorageLockManager;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.List;
 
+/**
+ * TXT implementation of StudentRepository.
+ * Uses ArrayList + BufferedReader/BufferedWriter.
+ * File: data/students.txt (UTF-8, one record per line).
+ */
 @Repository
 public class TxtStudentRepository implements StudentRepository {
 
-    private final TxtFileStore txtFileStore;
-    private final StorageLockManager storageLockManager;
+    private static final String SCHEMA_HEADER = "#SCHEMA|students|1";
+    private static final String FILE_NAME = "students.txt";
 
-    public TxtStudentRepository(
-            TxtFileStore txtFileStore,
-            StorageLockManager storageLockManager) {
+    private final Path filePath;
 
-        this.txtFileStore = txtFileStore;
-        this.storageLockManager = storageLockManager;
+    public TxtStudentRepository(@Value("${app.storage.dir:data}") String storageDir) {
+        this.filePath = Paths.get(storageDir).resolve(FILE_NAME);
+        ensureFileExists();
     }
 
-    // Create
+    // ---------------- interface methods ----------------
+
     @Override
-    public void save(Student student) throws FileStorageException {
+    public List<Student> findAll() {
+        return readAll();
+    }
 
-        storageLockManager.withFileLock("students", () -> {
+    @Override
+    public Optional<Student> findById(String studentId) {
+        return readAll().stream()
+                .filter(s -> s.getId().equals(studentId))
+                .findFirst();
+    }
 
-            ArrayList<String> records =
-                    txtFileStore.readRecords("students");
+    @Override
+    public Optional<Student> findByStudentNo(String studentNo) {
+        return readAll().stream()
+                .filter(s -> s.getStudentNo().equals(studentNo))
+                .findFirst();
+    }
 
-            for (String record : records) {
+    @Override
+    public Optional<Student> findByEmail(String email) {
+        String target = email.toLowerCase();
+        return readAll().stream()
+                .filter(s -> s.getEmail() != null && s.getEmail().toLowerCase().equals(target))
+                .findFirst();
+    }
 
-                Student existingStudent = convertToStudent(record);
+    @Override
+    public Student save(Student student) {
+        List<Student> all = readAll();
+        all.add(student);
+        writeAll(all);
+        return student;
+    }
 
-                if (existingStudent.getId().equals(student.getId())
-                        || existingStudent.getStudentNo().equalsIgnoreCase(student.getStudentNo())
-                        || existingStudent.getEmail().equalsIgnoreCase(student.getEmail())) {
+    @Override
+    public Student update(Student student) {
+        List<Student> all = readAll();
+        for (int i = 0; i < all.size(); i++) {
+            if (all.get(i).getId().equals(student.getId())) {
+                all.set(i, student);
+                writeAll(all);
+                return student;
+            }
+        }
+        throw new IllegalArgumentException("Student not found for update: " + student.getId());
+    }
 
-                    throw new FileStorageException("Student already exists");
+    // ---------------- private helpers (the real TXT + ArrayList work) ----------------
+
+    private List<Student> readAll() {
+        List<Student> result = new ArrayList<>();
+        if (!Files.exists(filePath)) return result;
+
+        try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+            String line;
+            boolean first = true;
+            while ((line = reader.readLine()) != null) {
+                if (first) {
+                    first = false;
+                    if (!SCHEMA_HEADER.equals(line)) {
+                        throw new IllegalStateException("Bad schema header in " + filePath);
+                    }
+                    continue;
                 }
+                if (line.isBlank()) continue;
+                result.add(parseLine(line));
             }
-
-            records.add(convertToRecord(student));
-
-            txtFileStore.writeRecords("students", records);
-
-            return null;
-        });
+        } catch (IOException e) {
+            throw new RuntimeException("Failed reading " + filePath, e);
+        }
+        return result;
     }
 
-    // Read by ID
-    @Override
-    public Optional<Student> findById(String id)
-            throws FileStorageException {
+    private void writeAll(List<Student> students) {
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
+            writer.write(SCHEMA_HEADER);
+            writer.newLine();
+            for (Student s : students) {
+                writer.write(toLine(s));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed writing " + filePath, e);
+        }
+    }
 
-        return storageLockManager.withFileLock("students", () -> {
+    private String toLine(Student s) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(enc(s.getId())).append('|');
+        sb.append(enc(s.getStudentNo())).append('|');
+        sb.append(enc(s.getFullName())).append('|');
+        sb.append(enc(s.getEmail())).append('|');
+        sb.append(enc(s.getPasswordHash())).append('|');
+        sb.append(enc(s.getStatus().name())).append('|');
+        sb.append(enc(s.getCreatedAt().toString())).append('|');
+        sb.append(enc(s.getUpdatedAt().toString()));
+        return sb.toString();
+    }
 
-            ArrayList<String> records =
-                    txtFileStore.readRecords("students");
+    private Student parseLine(String line) {
+        String[] parts = line.split("\\|", -1);
+        if (parts.length != 8) {
+            throw new IllegalStateException("Bad student record (expected 8 fields, got "
+                    + parts.length + "): " + line);
+        }
+        String id = dec(parts[0]);
+        String studentNo = dec(parts[1]);
+        String fullName = dec(parts[2]);
+        String email = dec(parts[3]);
+        String passwordHash = dec(parts[4]);
+        AccountStatus status = AccountStatus.valueOf(dec(parts[5]));
+        Instant createdAt = Instant.parse(dec(parts[6]));
+        Instant updatedAt = Instant.parse(dec(parts[7]));
 
-            for (String record : records) {
+        return new Student(id, studentNo, fullName, email, passwordHash, status, createdAt, updatedAt);
+    }
 
-                Student student = convertToStudent(record);
+    private static String enc(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
 
-                if (student.getId().equals(id)) {
-                    return Optional.of(student);
+    private static String dec(String value) {
+        return URLDecoder.decode(value, StandardCharsets.UTF_8);
+    }
+
+    private void ensureFileExists() {
+        try {
+            if (Files.notExists(filePath)) {
+                if (filePath.getParent() != null) {
+                    Files.createDirectories(filePath.getParent());
                 }
+                Files.writeString(filePath, SCHEMA_HEADER + System.lineSeparator(),
+                        StandardCharsets.UTF_8);
             }
-
-            return Optional.empty();
-        });
-    }
-
-    // Read all
-    @Override
-    public List<Student> findAll() throws FileStorageException {
-
-        return storageLockManager.withFileLock("students", () -> {
-
-            ArrayList<String> records =
-                    txtFileStore.readRecords("students");
-
-            List<Student> students = new ArrayList<>();
-
-            for (String record : records) {
-                students.add(convertToStudent(record));
-            }
-
-            return students;
-        });
-    }
-
-    // Update
-    @Override
-    public boolean update(String id, Student updatedStudent)
-            throws FileStorageException {
-
-        return storageLockManager.withFileLock("students", () -> {
-
-            ArrayList<String> records =
-                    txtFileStore.readRecords("students");
-
-            boolean found = false;
-
-            for (int i = 0; i < records.size(); i++) {
-
-                Student student = convertToStudent(records.get(i));
-
-                if (student.getId().equals(id)) {
-
-                    records.set(i, convertToRecord(updatedStudent));
-                    found = true;
-                    break;
-                }
-            }
-
-            if (found) {
-                txtFileStore.writeRecords("students", records);
-            }
-
-            return found;
-        });
-    }
-
-    // Delete
-    @Override
-    public boolean deleteById(String id)
-            throws FileStorageException {
-
-        return storageLockManager.withFileLock("students", () -> {
-
-            ArrayList<String> records =
-                    txtFileStore.readRecords("students");
-
-            boolean removed = false;
-
-            for (int i = 0; i < records.size(); i++) {
-
-                Student student = convertToStudent(records.get(i));
-
-                if (student.getId().equals(id)) {
-
-                    records.remove(i);
-                    removed = true;
-                    break;
-                }
-            }
-
-            if (removed) {
-                txtFileStore.writeRecords("students", records);
-            }
-
-            return removed;
-        });
-    }
-
-    // Check duplicate Student Number
-    @Override
-    public boolean existsByStudentNo(String studentNo)
-            throws FileStorageException {
-
-        return storageLockManager.withFileLock("students", () -> {
-
-            ArrayList<String> records =
-                    txtFileStore.readRecords("students");
-
-            for (String record : records) {
-
-                Student student = convertToStudent(record);
-
-                if (student.getStudentNo().equalsIgnoreCase(studentNo)) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
-    }
-
-    // Check duplicate Email
-    @Override
-    public boolean existsByEmail(String email)
-            throws FileStorageException {
-
-        return storageLockManager.withFileLock("students", () -> {
-
-            ArrayList<String> records =
-                    txtFileStore.readRecords("students");
-
-            for (String record : records) {
-
-                Student student = convertToStudent(record);
-
-                if (student.getEmail().equalsIgnoreCase(email)) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
-    }
-
-    // Convert Student object to TXT record
-    private String convertToRecord(Student student)
-            throws FileStorageException {
-
-        List<String> fields = Arrays.asList(
-                student.getId(),
-                student.getStudentNo(),
-                student.getFullName(),
-                student.getEmail(),
-                student.getPasswordHash(),
-                student.getStatus().name(),
-                student.getCreatedAt(),
-                student.getUpdatedAt()
-        );
-
-        return TxtCodec.encodeRecord(fields);
-    }
-
-    // Convert TXT record to Student object
-    private Student convertToStudent(String record)
-            throws FileStorageException {
-
-        List<String> fields = TxtCodec.decodeRecord(record, 8);
-
-        return new Student(
-                fields.get(0),
-                fields.get(2),
-                fields.get(3),
-                fields.get(4),
-                AccountStatus.valueOf(fields.get(5)),
-                fields.get(6),
-                fields.get(7),
-                fields.get(1)
-        );
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot create " + filePath, e);
+        }
     }
 }

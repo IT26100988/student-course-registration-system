@@ -1,32 +1,31 @@
 package com.example.studentregistration.accounts.repository;
 
 import com.example.studentregistration.accounts.model.Student;
-import com.example.studentregistration.shared.exception.FileStorageException;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository contract for Student persistence.
+ * No implementation here — TxtStudentRepository will implement this.
+ */
 public interface StudentRepository {
 
-    // Create
-    void save(Student student) throws FileStorageException;
+    /** Return all students from storage. */
+    List<Student> findAll();
 
-    // Read
-    Optional<Student> findById(String id) throws FileStorageException;
+    /** Find one student by id; Optional.empty() if not found. */
+    Optional<Student> findById(String studentId);
 
-    List<Student> findAll() throws FileStorageException;
+    /** Find one student by studentNo (unique). */
+    Optional<Student> findByStudentNo(String studentNo);
 
-    // Update
-    boolean update(String id, Student updatedStudent)
-            throws FileStorageException;
+    /** Find one student by email (case-insensitive unique check). */
+    Optional<Student> findByEmail(String email);
 
-    // Delete
-    boolean deleteById(String id) throws FileStorageException;
+    /** Insert a new student. Return the saved student. */
+    Student save(Student student);
 
-    // Duplicate Checking
-    boolean existsByStudentNo(String studentNo)
-            throws FileStorageException;
-
-    boolean existsByEmail(String email)
-            throws FileStorageException;
+    /** Update an existing student. Return the updated student. */
+    Student update(Student student);
 }

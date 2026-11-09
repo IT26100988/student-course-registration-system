@@ -1,19 +1,28 @@
 package com.example.studentregistration.accounts.model;
 
+import java.time.Instant;
+
+/**
+ * Abstract parent for Student and Admin.
+ * Common fields (identity + audit) live here. Subclasses add role-specific data.
+ */
 public abstract class User {
 
-    private final String id;
+    private String id;              // e.g. STU_... or ADM_...
     private String fullName;
     private String email;
-    private String passwordHash;
-    private AccountStatus status;
-    private String createdAt;
-    private String updatedAt;
+    private String passwordHash;    // BCrypt hash, NEVER plaintext
+    private AccountStatus status;   // ACTIVE / INACTIVE
+    private Instant createdAt;
+    private Instant updatedAt;
 
-    public User(String id, String fullName, String email,
-                String passwordHash, AccountStatus status,
-                String createdAt, String updatedAt) {
-
+    protected User(String id,
+                   String fullName,
+                   String email,
+                   String passwordHash,
+                   AccountStatus status,
+                   Instant createdAt,
+                   Instant updatedAt) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -23,51 +32,28 @@ public abstract class User {
         this.updatedAt = updatedAt;
     }
 
-    public String getId() {
-        return id;
-    }
+    /** Every subclass MUST say what role it is. */
+    public abstract UserRole getRole();
 
-    public String getFullName() {
-        return fullName;
-    }
+    // ---- encapsulated getters/setters ----
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 
-    public String getPasswordHash() {
-        return passwordHash;
-    }
+    public AccountStatus getStatus() { return status; }
+    public void setStatus(AccountStatus status) { this.status = status; }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
+    public Instant getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 
-    public AccountStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AccountStatus status) {
-        this.status = status;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    public Instant getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

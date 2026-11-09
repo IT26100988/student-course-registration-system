@@ -1,24 +1,25 @@
 package com.example.studentregistration.accounts.model;
 
+import java.time.Instant;
+
+/**
+ * Admin IS-A User.
+ * No extra fields needed for v1. Overrides getRole() to return ADMIN.
+ */
 public class Admin extends User {
 
-    private String adminId;
-
-    public Admin(String id, String fullName, String email,
-                 String passwordHash, AccountStatus status,
-                 String createdAt, String updatedAt,
-                 String adminId) {
-
+    public Admin(String id,
+                 String fullName,
+                 String email,
+                 String passwordHash,
+                 AccountStatus status,
+                 Instant createdAt,
+                 Instant updatedAt) {
         super(id, fullName, email, passwordHash, status, createdAt, updatedAt);
-
-        this.adminId = adminId;
     }
 
-    public String getAdminId() {
-        return adminId;
-    }
-
-    public void setAdminId(String adminId) {
-        this.adminId = adminId;
+    @Override
+    public UserRole getRole() {
+        return UserRole.ADMIN;
     }
 }

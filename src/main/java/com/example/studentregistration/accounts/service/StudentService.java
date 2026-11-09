@@ -1,20 +1,21 @@
 package com.example.studentregistration.accounts.service;
 
-import com.example.studentregistration.accounts.dto.StudentProfileResponse;
-import com.example.studentregistration.accounts.dto.UpdateStudentRequest;
-import com.example.studentregistration.accounts.dto.UpdateStudentStatusRequest;
-
+import com.example.studentregistration.accounts.exception.DuplicateStudentException;
+import com.example.studentregistration.accounts.exception.StudentNotFoundException;
 import com.example.studentregistration.accounts.model.AccountStatus;
 import com.example.studentregistration.accounts.model.Student;
-
 import com.example.studentregistration.accounts.repository.StudentRepository;
-import com.example.studentregistration.shared.exception.FileStorageException;
-
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+/**
+ * Business logic for Student accounts (M1).
+ * Controller -> Service -> Repository -> TXT file.
+ */
 @Service
 public class StudentService {
 
@@ -24,173 +25,95 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    // Add a new student
-    public void addStudent(Student student)
-            throws FileStorageException {
+    /** CREATE — register a new student. */
+    public Student register(String studentNo, String fullName, String email,
+                            String passwordHash) {
+        validateRequired(studentNo, "studentNo");
+        validateRequired(fullName, "fullName");
+        validateRequired(email, "email");
+        validateRequired(passwordHash, "passwordHash");
 
-        studentRepository.save(student);
+        if (studentRepository.findByStudentNo(studentNo).isPresent()) {
+            throw new DuplicateStudentException("studentNo already exists: " + studentNo);
+        }
+        if (studentRepository.findByEmail(email).isPresent()) {
+            throw new DuplicateStudentException("email already exists: " + email);
+        }
+
+        Instant now = Instant.now();
+        Student student = new Student(
+                "STU_" + UUID.randomUUID(),
+                studentNo.trim(),
+                fullName.trim(),
+                email.trim().toLowerCase(),
+                passwordHash,
+                AccountStatus.ACTIVE,
+                now,
+                now
+        );
+        return studentRepository.save(student);
     }
 
-    // Find student by ID
-    public Optional<Student> getStudentById(String id)
-            throws FileStorageException {
-
-        return studentRepository.findById(id);
+    /** READ — list all. */
+    public List<Student> findAll() {
+        return studentRepository.findAll();
     }
 
-    // Get student profile by ID
-    public Optional<StudentProfileResponse> getStudentProfile(String id)
-            throws FileStorageException {
-
-        return studentRepository.findById(id)
-                .map(this::convertToResponse);
-    }
-
-    // Get all student profiles and search students
-    public List<StudentProfileResponse> getAllStudentProfiles(String query)
-            throws FileStorageException {
-
-        return studentRepository.findAll()
-                .stream()
-                .filter(student -> matchesQuery(student, query))
-                .map(this::convertToResponse)
+    /** READ — search by name/email/studentNo. */
+    public List<Student> search(String query) {
+        if (query == null || query.isBlank()) return findAll();
+        String q = query.toLowerCase().trim();
+        return studentRepository.findAll().stream()
+                .filter(s -> s.getFullName().toLowerCase().contains(q)
+                        || s.getEmail().toLowerCase().contains(q)
+                        || s.getStudentNo().toLowerCase().contains(q))
                 .toList();
     }
 
-    // Update student profile
-    public Optional<StudentProfileResponse> updateStudentProfile(
-            String id,
-            UpdateStudentRequest request)
-            throws FileStorageException {
-
-        Optional<Student> optionalStudent =
-                studentRepository.findById(id);
-
-        if (optionalStudent.isEmpty()) {
-            return Optional.empty();
-        }
-
-        if (request.getFullName() == null
-                && request.getEmail() == null) {
-
-            throw new IllegalArgumentException(
-                    "At least one field is required");
-        }
-
-        Student student = optionalStudent.get();
-
-        // Update full name
-        if (request.getFullName() != null) {
-
-            if (request.getFullName().isBlank()) {
-                throw new IllegalArgumentException(
-                        "Full name cannot be empty");
-            }
-
-            student.setFullName(request.getFullName().trim());
-        }
-
-        // Update email
-        if (request.getEmail() != null) {
-
-            if (request.getEmail().isBlank()) {
-                throw new IllegalArgumentException(
-                        "Email cannot be empty");
-            }
-
-            String newEmail = request.getEmail().trim();
-
-            boolean emailExists = studentRepository.findAll()
-                    .stream()
-                    .anyMatch(s ->
-                            !s.getId().equals(id)
-                                    && s.getEmail().equalsIgnoreCase(newEmail));
-
-            if (emailExists) {
-                throw new IllegalArgumentException(
-                        "Email already exists");
-            }
-
-            student.setEmail(newEmail);
-        }
-
-        boolean updated =
-                studentRepository.update(id, student);
-
-        if (!updated) {
-            return Optional.empty();
-        }
-
-        return Optional.of(convertToResponse(student));
+    /** READ — one by id. */
+    public Student findById(String studentId) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found: " + studentId));
     }
 
-    // Update student status (ACTIVE / INACTIVE)
-    public Optional<StudentProfileResponse> updateStudentStatus(
-            String id,
-            UpdateStudentStatusRequest request)
-            throws FileStorageException {
+    /** UPDATE — profile (fullName, email). */
+    public Student updateProfile(String studentId, String fullName, String email) {
+        Student existing = findById(studentId);
 
-        if (request.getStatus() == null) {
-            throw new IllegalArgumentException(
-                    "Status is required");
+        if (fullName != null && !fullName.isBlank()) {
+            existing.setFullName(fullName.trim());
         }
-
-        AccountStatus status;
-
-        try {
-            status = AccountStatus.valueOf(
-                    request.getStatus().trim().toUpperCase());
-
-        } catch (IllegalArgumentException e) {
-
-            throw new IllegalArgumentException(
-                    "Status must be ACTIVE or INACTIVE");
+        if (email != null && !email.isBlank()) {
+            String normalized = email.trim().toLowerCase();
+            Optional<Student> byEmail = studentRepository.findByEmail(normalized);
+            if (byEmail.isPresent() && !byEmail.get().getId().equals(studentId)) {
+                throw new DuplicateStudentException("email already exists: " + normalized);
+            }
+            existing.setEmail(normalized);
         }
-
-        Optional<Student> optionalStudent =
-                studentRepository.findById(id);
-
-        if (optionalStudent.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Student student = optionalStudent.get();
-
-        student.setStatus(status);
-
-        boolean updated =
-                studentRepository.update(id, student);
-
-        if (!updated) {
-            return Optional.empty();
-        }
-
-        return Optional.of(convertToResponse(student));
+        existing.setUpdatedAt(Instant.now());
+        return studentRepository.update(existing);
     }
 
-    // Search students
-    private boolean matchesQuery(Student student, String query) {
-
-        if (query == null || query.isBlank()) {
-            return true;
-        }
-
-        String search = query.trim().toLowerCase();
-
-        return student.getStudentNo().toLowerCase().contains(search)
-                || student.getFullName().toLowerCase().contains(search)
-                || student.getEmail().toLowerCase().contains(search);
+    /** UPDATE — status (ACTIVE/INACTIVE). */
+    public Student updateStatus(String studentId, AccountStatus status) {
+        Student existing = findById(studentId);
+        existing.setStatus(status);
+        existing.setUpdatedAt(Instant.now());
+        return studentRepository.update(existing);
     }
 
-    // Convert Student object into StudentProfileResponse
-    private StudentProfileResponse convertToResponse(Student student) {
+    /** UPDATE — password hash. */
+    public void updatePasswordHash(String studentId, String newPasswordHash) {
+        Student existing = findById(studentId);
+        existing.setPasswordHash(newPasswordHash);
+        existing.setUpdatedAt(Instant.now());
+        studentRepository.update(existing);
+    }
 
-        return new StudentProfileResponse(
-                student.getId(),
-                student.getStudentNo(),
-                student.getFullName(),
-                student.getEmail(),
-                student.getStatus().name()
-        );
+    private void validateRequired(String value, String field) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(field + " is required");
+        }
     }
 }

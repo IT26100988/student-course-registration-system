@@ -1,194 +1,171 @@
 package com.example.studentregistration.accounts.repository.txt;
 
-import com.example.studentregistration.accounts.model.Admin;
 import com.example.studentregistration.accounts.model.AccountStatus;
+import com.example.studentregistration.accounts.model.Admin;
 import com.example.studentregistration.accounts.repository.AdminRepository;
-
-import com.example.studentregistration.shared.exception.FileStorageException;
-import com.example.studentregistration.shared.filehandling.TxtCodec;
-import com.example.studentregistration.shared.filehandling.TxtFileStore;
-import com.example.studentregistration.shared.filehandling.StorageLockManager;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class TxtAdminRepository implements AdminRepository {
 
-    private final TxtFileStore txtFileStore;
-    private final StorageLockManager storageLockManager;
+    private static final String SCHEMA_HEADER = "#SCHEMA|admins|1";
+    private static final String FILE_NAME = "admins.txt";
 
-    public TxtAdminRepository(
-            TxtFileStore txtFileStore,
-            StorageLockManager storageLockManager) {
+    private final Path filePath;
 
-        this.txtFileStore = txtFileStore;
-        this.storageLockManager = storageLockManager;
+    public TxtAdminRepository(@Value("${app.storage.dir:data}") String storageDir) {
+        this.filePath = Paths.get(storageDir).resolve(FILE_NAME);
+        ensureFileExists();
     }
 
     @Override
-    public void save(Admin admin) throws FileStorageException {
+    public List<Admin> findAll() {
+        return readAll();
+    }
 
-        storageLockManager.withFileLock("admins", () -> {
+    @Override
+    public Optional<Admin> findById(String adminId) {
+        return readAll().stream()
+                .filter(a -> a.getId().equals(adminId))
+                .findFirst();
+    }
 
-            ArrayList<String> records =
-                    txtFileStore.readRecords("admins");
+    @Override
+    public Optional<Admin> findByEmail(String email) {
+        String target = email.toLowerCase();
+        return readAll().stream()
+                .filter(a -> a.getEmail() != null && a.getEmail().toLowerCase().equals(target))
+                .findFirst();
+    }
 
-            for (String record : records) {
+    @Override
+    public Admin save(Admin admin) {
+        List<Admin> all = readAll();
+        all.add(admin);
+        writeAll(all);
+        return admin;
+    }
 
-                Admin existingAdmin = convertToAdmin(record);
+    @Override
+    public Admin update(Admin admin) {
+        List<Admin> all = readAll();
+        for (int i = 0; i < all.size(); i++) {
+            if (all.get(i).getId().equals(admin.getId())) {
+                all.set(i, admin);
+                writeAll(all);
+                return admin;
+            }
+        }
+        throw new IllegalArgumentException("Admin not found for update: " + admin.getId());
+    }
 
-                if (existingAdmin.getAdminId().equals(admin.getAdminId())
-                        || existingAdmin.getEmail().equalsIgnoreCase(admin.getEmail())) {
+    @Override
+    public boolean existsAnyActiveAdmin() {
+        return readAll().stream().anyMatch(a -> a.getStatus() == AccountStatus.ACTIVE);
+    }
 
-                    throw new FileStorageException("Admin already exists");
+    // ---------------- private helpers ----------------
+
+    private List<Admin> readAll() {
+        List<Admin> result = new ArrayList<>();
+        if (!Files.exists(filePath)) return result;
+
+        try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+            String line;
+            boolean first = true;
+            while ((line = reader.readLine()) != null) {
+                if (first) {
+                    first = false;
+                    if (!SCHEMA_HEADER.equals(line)) {
+                        throw new IllegalStateException("Bad schema header in " + filePath);
+                    }
+                    continue;
                 }
+                if (line.isBlank()) continue;
+                result.add(parseLine(line));
             }
-
-            records.add(convertToRecord(admin));
-
-            txtFileStore.writeRecords("admins", records);
-
-            return null;
-        });
+        } catch (IOException e) {
+            throw new RuntimeException("Failed reading " + filePath, e);
+        }
+        return result;
     }
 
-    @Override
-    public Optional<Admin> findById(String id)
-            throws FileStorageException {
+    private void writeAll(List<Admin> admins) {
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
+            writer.write(SCHEMA_HEADER);
+            writer.newLine();
+            for (Admin a : admins) {
+                writer.write(toLine(a));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed writing " + filePath, e);
+        }
+    }
 
-        return storageLockManager.withFileLock("admins", () -> {
+    private String toLine(Admin a) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(enc(a.getId())).append('|');
+        sb.append(enc(a.getFullName())).append('|');
+        sb.append(enc(a.getEmail())).append('|');
+        sb.append(enc(a.getPasswordHash())).append('|');
+        sb.append(enc(a.getStatus().name())).append('|');
+        sb.append(enc(a.getCreatedAt().toString())).append('|');
+        sb.append(enc(a.getUpdatedAt().toString()));
+        return sb.toString();
+    }
 
-            ArrayList<String> records =
-                    txtFileStore.readRecords("admins");
+    private Admin parseLine(String line) {
+        String[] parts = line.split("\\|", -1);
+        if (parts.length != 7) {
+            throw new IllegalStateException("Bad admin record (expected 7 fields, got "
+                    + parts.length + "): " + line);
+        }
+        String id = dec(parts[0]);
+        String fullName = dec(parts[1]);
+        String email = dec(parts[2]);
+        String passwordHash = dec(parts[3]);
+        AccountStatus status = AccountStatus.valueOf(dec(parts[4]));
+        Instant createdAt = Instant.parse(dec(parts[5]));
+        Instant updatedAt = Instant.parse(dec(parts[6]));
 
-            for (String record : records) {
+        return new Admin(id, fullName, email, passwordHash, status, createdAt, updatedAt);
+    }
 
-                Admin admin = convertToAdmin(record);
+    private static String enc(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
 
-                if (admin.getAdminId().equals(id)) {
-                    return Optional.of(admin);
+    private static String dec(String value) {
+        return URLDecoder.decode(value, StandardCharsets.UTF_8);
+    }
+
+    private void ensureFileExists() {
+        try {
+            if (Files.notExists(filePath)) {
+                if (filePath.getParent() != null) {
+                    Files.createDirectories(filePath.getParent());
                 }
+                Files.writeString(filePath, SCHEMA_HEADER + System.lineSeparator(),
+                        StandardCharsets.UTF_8);
             }
-
-            return Optional.empty();
-        });
-    }
-
-    @Override
-    public List<Admin> findAll() throws FileStorageException {
-
-        return storageLockManager.withFileLock("admins", () -> {
-
-            ArrayList<String> records =
-                    txtFileStore.readRecords("admins");
-
-            List<Admin> admins = new ArrayList<>();
-
-            for (String record : records) {
-                admins.add(convertToAdmin(record));
-            }
-
-            return admins;
-        });
-    }
-
-    @Override
-    public boolean update(String id, Admin updatedAdmin)
-            throws FileStorageException {
-
-        return storageLockManager.withFileLock("admins", () -> {
-
-            ArrayList<String> records =
-                    txtFileStore.readRecords("admins");
-
-            boolean found = false;
-
-            for (int i = 0; i < records.size(); i++) {
-
-                Admin admin = convertToAdmin(records.get(i));
-
-                if (admin.getAdminId().equals(id)) {
-
-                    records.set(i, convertToRecord(updatedAdmin));
-                    found = true;
-                    break;
-                }
-            }
-
-            if (found) {
-                txtFileStore.writeRecords("admins", records);
-            }
-
-            return found;
-        });
-    }
-
-    @Override
-    public boolean deleteById(String id)
-            throws FileStorageException {
-
-        return storageLockManager.withFileLock("admins", () -> {
-
-            ArrayList<String> records =
-                    txtFileStore.readRecords("admins");
-
-            boolean removed = false;
-
-            for (int i = 0; i < records.size(); i++) {
-
-                Admin admin = convertToAdmin(records.get(i));
-
-                if (admin.getAdminId().equals(id)) {
-
-                    records.remove(i);
-                    removed = true;
-                    break;
-                }
-            }
-
-            if (removed) {
-                txtFileStore.writeRecords("admins", records);
-            }
-
-            return removed;
-        });
-    }
-
-    private String convertToRecord(Admin admin)
-            throws FileStorageException {
-
-        List<String> fields = Arrays.asList(
-                admin.getAdminId(),
-                admin.getFullName(),
-                admin.getEmail(),
-                admin.getPasswordHash(),
-                admin.getStatus().name(),
-                admin.getCreatedAt(),
-                admin.getUpdatedAt()
-        );
-
-        return TxtCodec.encodeRecord(fields);
-    }
-
-    private Admin convertToAdmin(String record)
-            throws FileStorageException {
-
-        List<String> fields = TxtCodec.decodeRecord(record, 7);
-
-        return new Admin(
-                fields.get(0),
-                fields.get(1),
-                fields.get(2),
-                fields.get(3),
-                AccountStatus.valueOf(fields.get(4)),
-                fields.get(5),
-                fields.get(6),
-                fields.get(0)
-        );
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot create " + filePath, e);
+        }
     }
 }
