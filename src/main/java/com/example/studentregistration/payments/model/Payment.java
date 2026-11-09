@@ -7,12 +7,12 @@ public class Payment {
     private String paymentId;
     private String invoiceId;
     private String studentId;
-    private PaymentMethod method;
+    private PaymentMethod method; // Enum (DEMO හෝ MANUAL)
     private String idempotencyKey;
     private String externalReference;
     private BigDecimal amount;
     private String currency;
-    private PaymentStatus status; 
+    private PaymentStatus status; // Enum
     private Instant submittedAt;
     private Instant verifiedAt;
     private String verifiedByAdminId;
@@ -32,6 +32,7 @@ public class Payment {
         this.status = status;
         this.submittedAt = submittedAt;
     }
+
 
     public String getPaymentId() { return paymentId; }
     public void setPaymentId(String paymentId) { this.paymentId = paymentId; }

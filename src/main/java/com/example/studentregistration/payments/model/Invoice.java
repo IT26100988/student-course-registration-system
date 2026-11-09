@@ -10,10 +10,11 @@ public class Invoice {
     private String offeringId;
     private String currency;
     private BigDecimal totalAmount;
-    private InvoiceStatus status; 
+    private InvoiceStatus status; // Enum
     private Instant issuedAt;
     private Instant paidAt;
     private Instant voidedAt;
+
 
     private InvoiceLine line;
 
@@ -31,6 +32,7 @@ public class Invoice {
         this.issuedAt = issuedAt;
         this.line = line;
     }
+
 
     public String getInvoiceId() { return invoiceId; }
     public void setInvoiceId(String invoiceId) { this.invoiceId = invoiceId; }
