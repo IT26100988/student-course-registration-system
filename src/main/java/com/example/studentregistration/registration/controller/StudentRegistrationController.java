@@ -3,7 +3,9 @@ package com.example.studentregistration.registration.controller;
 import com.example.studentregistration.registration.dto.RegistrationRequestResponse;
 import com.example.studentregistration.registration.dto.SubmitRegistrationRequest;
 import com.example.studentregistration.registration.model.RegistrationRequest;
+import com.example.studentregistration.registration.service.EnrollmentLifecycleService;
 import com.example.studentregistration.registration.service.RegistrationRequestService;
+
 
 import jakarta.servlet.http.HttpSession;
 
@@ -29,10 +31,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class StudentRegistrationController {
 
     private final RegistrationRequestService requestService;
+    private final EnrollmentLifecycleService lifecycleService;
 
     public StudentRegistrationController(
-            RegistrationRequestService requestService) {
+            RegistrationRequestService requestService,
+            EnrollmentLifecycleService lifecycleService) { // <-- අලුතින්
         this.requestService = requestService;
+        this.lifecycleService = lifecycleService;      // <-- අලුතින්
     }
 
     /**
@@ -89,6 +94,24 @@ public class StudentRegistrationController {
                 "items", mine,
                 "total", mine.size()
         ));
+    }
+
+    /**
+     * PATCH /api/v1/students/me/requests/{requestId}/cancel
+     * Cancels a PENDING request owned by the logged-in student.
+     */
+    @PatchMapping("/requests/{requestId}/cancel")
+    public ResponseEntity<RegistrationRequestResponse> cancel(
+            @PathVariable String requestId,
+            HttpSession session) {
+
+        String studentId = requireStudentId(session);
+
+        // 1. Service එකට කියලා Cancel කරන්න
+        RegistrationRequest cancelled = lifecycleService.cancelByStudent(requestId, studentId);
+
+        // 2. ආපු Result එක ආපහු යවන්න
+        return ResponseEntity.ok(toResponse(cancelled));
     }
 
     // ---------- helpers ----------

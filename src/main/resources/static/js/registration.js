@@ -89,12 +89,19 @@ async function loadMyRequests() {
 
         data.items.forEach(req => {
             const tr = document.createElement("tr");
+
+            let actionBtn = "-";
+            if (req.status === "PENDING") {
+                actionBtn = `<button style="background:#e74c3c; padding: 5px 10px; font-size: 12px;" onclick="cancelRequest('${req.requestId}')">Cancel</button>`;
+            }
+
             tr.innerHTML = `
                 <td>${req.requestId}</td>
                 <td>${req.offeringId}</td>
                 <td>${req.sequenceNo}</td>
                 <td class="status-${req.status}">${req.status}</td>
                 <td>${new Date(req.requestedAt).toLocaleString()}</td>
+                <td>${actionBtn}</td>
             `;
             tbody.appendChild(tr);
         });
@@ -134,5 +141,30 @@ async function loadMyEnrollments() {
 
     } catch (error) {
         tbody.innerHTML = `<tr><td colspan='4' style='color:red'>${error.message}</td></tr>`;
+    }
+}
+// ================= CANCEL REQUEST =================
+
+async function cancelRequest(requestId) {
+    if (!confirm("Are you sure you want to cancel this request?")) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/v1/students/me/requests/${requestId}/cancel`, {
+            method: "PATCH"
+        });
+
+        if (!response.ok) {
+            throw new Error("Cancel failed");
+        }
+
+        alert("Request cancelled successfully!");
+
+        // Table එක Refresh කරන්න
+        await loadMyRequests();
+
+    } catch (error) {
+        alert("Error: " + error.message);
     }
 }
