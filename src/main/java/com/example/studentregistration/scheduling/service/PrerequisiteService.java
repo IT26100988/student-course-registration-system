@@ -126,6 +126,10 @@ public class PrerequisiteService {
             Prerequisite candidate,
             String ignoredPrerequisiteId
     ) {
+        if (!isActive(candidate)) {
+            return;
+        }
+
         for (Prerequisite item : existing) {
             if (item.getPrerequisiteId().equals(ignoredPrerequisiteId)) {
                 continue;
@@ -147,6 +151,10 @@ public class PrerequisiteService {
             Prerequisite candidate,
             String ignoredPrerequisiteId
     ) {
+        if (!isActive(candidate)) {
+            return;
+        }
+
         ArrayList<Prerequisite> rulesToCheck = new ArrayList<>();
 
         for (Prerequisite item : existing) {
@@ -176,16 +184,36 @@ public class PrerequisiteService {
             String currentCourseId,
             String targetCourseId
     ) {
+        return pathExists(
+                rules,
+                currentCourseId,
+                targetCourseId,
+                new ArrayList<>()
+        );
+    }
+
+    private boolean pathExists(
+            ArrayList<Prerequisite> rules,
+            String currentCourseId,
+            String targetCourseId,
+            ArrayList<String> visitedCourseIds
+    ) {
         if (currentCourseId.equals(targetCourseId)) {
             return true;
         }
+
+        if (visitedCourseIds.contains(currentCourseId)) {
+            return false;
+        }
+        visitedCourseIds.add(currentCourseId);
 
         for (Prerequisite rule : rules) {
             if (rule.getCourseId().equals(currentCourseId)
                     && pathExists(
                     rules,
                     rule.getRequiredCourseId(),
-                    targetCourseId
+                    targetCourseId,
+                    visitedCourseIds
             )) {
                 return true;
             }
