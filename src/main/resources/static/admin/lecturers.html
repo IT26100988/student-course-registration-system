@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturer Management</title>
+
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/scheduling.js" defer></script>
+</head>
+<body>
+<main>
+    <h1>Lecturer Management</h1>
+
+    <section>
+        <h2>Add or Update Lecturer</h2>
+
+        <form id="lecturer-form">
+            <input type="hidden" id="lecturerId">
+
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+
+            <label for="department">Department</label>
+            <input type="text" id="department" required>
+
+            <label for="status">Status</label>
+            <select id="status">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+            </select>
+
+            <button type="submit" id="saveButton">Save Lecturer</button>
+            <button type="button" id="cancelButton">Cancel Update</button>
+        </form>
+
+        <p id="message" role="status"></p>
+    </section>
+
+    <section>
+        <h2>Lecturers</h2>
+        <button type="button" id="refreshButton">Refresh List</button>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="lecturersTableBody"></tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Prerequisites</title>
+
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/scheduling.js" defer></script>
+</head>
+<body>
+<main>
+    <h1>Course Prerequisites</h1>
+
+    <p>Enter a course ID to see its required courses.</p>
+
+    <form id="student-prerequisite-form">
+        <label for="studentCourseId">Course ID</label>
+        <input type="text" id="studentCourseId" required>
+
+        <button type="submit">Show Prerequisites</button>
+    </form>
+
+    <p id="studentPrerequisiteMessage" role="status"></p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Course ID</th>
+            <th>Required Course ID</th>
+        </tr>
+        </thead>
+        <tbody id="studentPrerequisiteTableBody"></tbody>
+    </table>
+</main>
+</body>
+</html>
