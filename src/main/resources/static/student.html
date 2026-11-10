@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniPortal | Student Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        :root { --primary: #10b981; --navy: #172554; --muted: #64748b; --border: #e4e9f5; --glass: rgba(255, 255, 255, 0.91); --radius: 20px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { min-height: 100vh; color: var(--navy); background: linear-gradient(120deg, rgba(12, 25, 58, .65), rgba(37, 36, 105, .4)), url('https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=2000&q=85') center/cover fixed; }
+        .navbar { background: rgba(15, 29, 65, .86); border-bottom: 1px solid rgba(255,255,255,.12); padding: 15px 32px; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .brand { display: flex; align-items: center; gap: 12px; color: white; text-decoration: none; font-weight: 800; font-size: 1.2rem; }
+        .nav-links { display: flex; gap: 15px; }
+        .nav-links a { color: #c7d2fe; text-decoration: none; font-size: 0.9rem; font-weight: 600; padding: 6px 14px; border-radius: 20px; background: rgba(255,255,255,0.1); }
+        .nav-links a.active { background: white; color: var(--navy); }
+        .page { width: min(1280px, calc(100% - 40px)); margin: auto; padding: 35px 0; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; margin-bottom: 24px; }
+        .stat-card { background: var(--glass); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .card { background: var(--glass); border-radius: var(--radius); padding: 25px; box-shadow: 0 20px 55px rgba(18, 35, 85, .17); margin-bottom: 24px; }
+        .btn { padding: 8px 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.8rem; }
+        .btn-success { background: var(--primary); color: white; }
+        .btn-success:disabled { background: #cbd5e1; cursor: not-allowed; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 10px; overflow: hidden; }
+        th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.85rem; }
+        th { background: #f1f5f9; color: var(--muted); }
+        .toast { position: fixed; right: 24px; bottom: 24px; background: var(--navy); color: white; padding: 14px 20px; border-radius: 10px; font-size: 0.85rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="student.html" class="brand"><i class="fa-solid fa-user-graduate"></i> UniPortal Student Hub</a>
+    <div class="nav-links">
+        <a href="admin.html">Admin View</a>
+        <a href="student.html" class="active">Student Portal</a>
+    </div>
+</nav>
+
+<main class="page">
+    <div class="stats">
+        <div class="stat-card"><span>Total Courses</span><strong id="statCourses" style="display:block; font-size:1.5rem; margin-top:5px;">0</strong></div>
+        <div class="stat-card"><span>Enrolled Students</span><strong id="statStudents" style="display:block; font-size:1.5rem; margin-top:5px;">0</strong></div>
+        <div class="stat-card"><span>Available Seats</span><strong id="statSeats" style="display:block; font-size:1.5rem; margin-top:5px;">0</strong></div>
+    </div>
+
+    <div class="card">
+        <h2><i class="fa-solid fa-book-open"></i> Explore & Enroll in Courses</h2>
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Course Name</th><th>Fee</th><th>Capacity</th><th>Enrolled</th><th>Action</th></tr>
+            </thead>
+            <tbody id="courseTableBody"></tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    const API_BASE = '/api/courses';
+    let coursesData = [];
+
+    document.addEventListener('DOMContentLoaded', loadCourses);
+
+    function loadCourses() {
+        fetch(API_BASE)
+            .then(res => res.json())
+            .then(data => {
+                coursesData = data;
+                renderTable(data);
+                updateStats(data);
+            });
+    }
+
+    function renderTable(courses) {
+        const tbody = document.getElementById('courseTableBody');
+        if (courses.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted);">No courses available for registration.</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = courses.map(c => {
+            const isFull = c.capacity > 0 && c.enrolledStudents >= c.capacity;
+            return `
+                <tr>
+                    <td><b>${c.courseId}</b></td>
+                    <td>${c.courseName}</td>
+                    <td>Rs. ${Number(c.fee).toLocaleString()}</td>
+                    <td>${c.capacity}</td>
+                    <td>${c.enrolledStudents || 0} / ${c.capacity}</td>
+                    <td>
+                        <button class="btn btn-success" onclick="enrollStudent('${c.courseId}')" ${isFull ? 'disabled' : ''}>
+                            <i class="fa-solid ${isFull ? 'fa-ban' : 'fa-user-plus'}"></i> ${isFull ? 'Full' : 'Enroll Now'}
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function updateStats(courses) {
+        document.getElementById('statCourses').textContent = courses.length;
+        let enrolled = 0, capacity = 0;
+        courses.forEach(c => { enrolled += (c.enrolledStudents || 0); capacity += (c.capacity || 0); });
+        document.getElementById('statStudents').textContent = enrolled;
+        document.getElementById('statSeats').textContent = Math.max(0, capacity - enrolled);
+    }
+
+    window.enrollStudent = function(id) {
+        const c = coursesData.find(item => item.courseId === id);
+        if(!c) return;
+
+        const updated = { ...c, enrolledStudents: (c.enrolledStudents || 0) + 1 };
+
+        fetch(API_BASE, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updated)
+        })
+            .then(res => { if(!res.ok) throw new Error('Enrollment failed'); return res.text(); })
+            .then(() => {
+                showToast(`Successfully enrolled in ${c.courseName}!`);
+                loadCourses();
+            })
+            .catch(err => showToast(err.message, 'error'));
+    };
+
+    function showToast(msg) {
+        const t = document.createElement('div');
+        t.className = 'toast'; t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+    }
+</script>
+</body>
+</html>

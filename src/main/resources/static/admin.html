@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniPortal | Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        :root { --primary: #5145e5; --navy: #172554; --muted: #64748b; --border: #e4e9f5; --glass: rgba(255, 255, 255, 0.91); --radius: 20px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { min-height: 100vh; color: var(--navy); background: linear-gradient(120deg, rgba(12, 25, 58, .65), rgba(37, 36, 105, .4)), url('https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=2000&q=85') center/cover fixed; }
+        .navbar { background: rgba(15, 29, 65, .86); border-bottom: 1px solid rgba(255,255,255,.12); padding: 15px 32px; display: flex; justify-content: space-between; align-items: center; color: white; }
+        .brand { display: flex; align-items: center; gap: 12px; color: white; text-decoration: none; font-weight: 800; font-size: 1.2rem; }
+        .nav-links { display: flex; gap: 15px; }
+        .nav-links a { color: #c7d2fe; text-decoration: none; font-size: 0.9rem; font-weight: 600; padding: 6px 14px; border-radius: 20px; background: rgba(255,255,255,0.1); }
+        .nav-links a.active { background: white; color: var(--navy); }
+        .page { width: min(1280px, calc(100% - 40px)); margin: auto; padding: 35px 0; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; margin-bottom: 24px; }
+        .stat-card { background: var(--glass); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .main-grid { display: grid; grid-template-columns: 1.45fr 1fr; gap: 22px; }
+        .card { background: var(--glass); border-radius: var(--radius); padding: 25px; box-shadow: 0 20px 55px rgba(18, 35, 85, .17); margin-bottom: 24px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field.full { grid-column: 1 / -1; }
+        .field input { height: 42px; padding: 0 12px; border: 1px solid #d6dfef; border-radius: 8px; outline: none; }
+        .btn { padding: 10px 16px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: white; grid-column: 1 / -1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 10px; overflow: hidden; }
+        th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid #eee; font-size: 0.85rem; }
+        th { background: #f1f5f9; color: var(--muted); }
+        .actions { display: flex; gap: 8px; }
+        .btn-icon { width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; display: grid; place-items: center; }
+        .btn-edit { background: #eeebff; color: var(--primary); }
+        .btn-delete { background: #fff0f2; color: #e54865; }
+        .toast { position: fixed; right: 24px; bottom: 24px; background: var(--navy); color: white; padding: 14px 20px; border-radius: 10px; font-size: 0.85rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="admin.html" class="brand"><i class="fa-solid fa-user-shield"></i> UniPortal Admin</a>
+    <div class="nav-links">
+        <a href="admin.html" class="active">Admin Dashboard</a>
+        <a href="student.html">Student View</a>
+    </div>
+</nav>
+
+<main class="page">
+    <div class="stats">
+        <div class="stat-card"><span>Total Courses</span><strong id="statCourses" style="display:block; font-size:1.5rem; margin-top:5px;">0</strong></div>
+        <div class="stat-card"><span>Enrolled Students</span><strong id="statStudents" style="display:block; font-size:1.5rem; margin-top:5px;">0</strong></div>
+        <div class="stat-card"><span>Available Seats</span><strong id="statSeats" style="display:block; font-size:1.5rem; margin-top:5px;">0</strong></div>
+    </div>
+
+    <div class="main-grid">
+        <div class="card">
+            <h2><i class="fa-solid fa-plus-circle"></i> <span id="formHeading">Create New Course</span></h2>
+            <form id="courseForm" class="form-grid">
+                <div class="field full"><label>Course ID</label><input id="courseId" required placeholder="e.g. CS-101"></div>
+                <div class="field full"><label>Course Name</label><input id="courseName" required placeholder="e.g. Web Development"></div>
+                <div class="field"><label>Fee (Rs.)</label><input id="fee" type="number" step="0.01" required placeholder="15000"></div>
+                <div class="field"><label>Capacity</label><input id="capacity" type="number" required placeholder="100"></div>
+                <div class="field full"><label>Enrolled Students</label><input id="enrolledStudents" type="number" value="0" required></div>
+                <button class="btn btn-primary" type="submit" id="submitBtn">Add Course</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2><i class="fa-solid fa-search"></i> Quick Search</h2>
+            <form id="searchForm" style="display:flex; gap:10px; margin-top:15px;">
+                <input id="searchId" style="flex:1; height:42px; padding:0 10px; border:1px solid #d6dfef; border-radius:8px;" placeholder="Enter Course ID..." required>
+                <button class="btn btn-primary" style="grid-column:auto;" type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+            </form>
+            <div id="searchResult" style="margin-top:15px; font-size:0.85rem;"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>All Registered Courses</h2>
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Name</th><th>Fee</th><th>Capacity</th><th>Enrolled</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="courseTableBody"></tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    const API_BASE = '/api/courses';
+    let isEditMode = false;
+    let coursesData = [];
+
+    document.addEventListener('DOMContentLoaded', loadCourses);
+
+    function loadCourses() {
+        fetch(API_BASE)
+            .then(res => res.json())
+            .then(data => {
+                coursesData = data;
+                renderTable(data);
+                updateStats(data);
+            });
+    }
+
+    function renderTable(courses) {
+        const tbody = document.getElementById('courseTableBody');
+        if (courses.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted);">No courses found.</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = courses.map(c => `
+            <tr>
+                <td><b>${c.courseId}</b></td>
+                <td>${c.courseName}</td>
+                <td>Rs. ${Number(c.fee).toLocaleString()}</td>
+                <td>${c.capacity}</td>
+                <td>${c.enrolledStudents || 0}</td>
+                <td>
+                    <div class="actions">
+                        <button class="btn-icon btn-edit" onclick="prepareEdit('${c.courseId}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn-icon btn-delete" onclick="deleteCourse('${c.courseId}')"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function updateStats(courses) {
+        document.getElementById('statCourses').textContent = courses.length;
+        let enrolled = 0, capacity = 0;
+        courses.forEach(c => { enrolled += (c.enrolledStudents || 0); capacity += (c.capacity || 0); });
+        document.getElementById('statStudents').textContent = enrolled;
+        document.getElementById('statSeats').textContent = Math.max(0, capacity - enrolled);
+    }
+
+    document.getElementById('courseForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const course = {
+            courseId: document.getElementById('courseId').value.trim(),
+            courseName: document.getElementById('courseName').value.trim(),
+            fee: parseFloat(document.getElementById('fee').value),
+            capacity: parseInt(document.getElementById('capacity').value),
+            enrolledStudents: parseInt(document.getElementById('enrolledStudents').value) || 0
+        };
+
+        fetch(API_BASE, {
+            method: isEditMode ? 'PUT' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(course)
+        })
+            .then(res => res.text().then(msg => { if(!res.ok) throw new Error(msg); showToast(msg || 'Success'); resetForm(); loadCourses(); }))
+            .catch(err => showToast(err.message, 'error'));
+    });
+
+    window.prepareEdit = function(id) {
+        const c = coursesData.find(item => item.courseId === id);
+        if(!c) return;
+        isEditMode = true;
+        document.getElementById('courseId').value = c.courseId;
+        document.getElementById('courseId').readOnly = true;
+        document.getElementById('courseName').value = c.courseName;
+        document.getElementById('fee').value = c.fee;
+        document.getElementById('capacity').value = c.capacity;
+        document.getElementById('enrolledStudents').value = c.enrolledStudents;
+        document.getElementById('formHeading').textContent = 'Edit Course: ' + id;
+        document.getElementById('submitBtn').textContent = 'Save Changes';
+    };
+
+    function resetForm() {
+        isEditMode = false;
+        document.getElementById('courseForm').reset();
+        document.getElementById('courseId').readOnly = false;
+        document.getElementById('formHeading').textContent = 'Create New Course';
+        document.getElementById('submitBtn').textContent = 'Add Course';
+    }
+
+    window.deleteCourse = function(id) {
+        if(!confirm(`Delete course ${id}?`)) return;
+        fetch(`${API_BASE}/${id}`, { method: 'DELETE' })
+            .then(res => res.text().then(msg => { showToast(msg || 'Deleted'); loadCourses(); }));
+    };
+
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = document.getElementById('searchId').value.trim();
+        fetch(`${API_BASE}/${id}`)
+            .then(res => { if(!res.ok) throw new Error(); return res.json(); })
+            .then(c => {
+                document.getElementById('searchResult').innerHTML = `<div style="background:#f5f3ff; padding:12px; border-radius:8px; border:1px solid #c7d2fe;"><b>${c.courseName}</b><br>Fee: Rs.${c.fee} | Enrolled: ${c.enrolledStudents}/${c.capacity}</div>`;
+            })
+            .catch(() => { document.getElementById('searchResult').innerHTML = `<span style="color:red;">Course not found!</span>`; });
+    });
+
+    function showToast(msg) {
+        const t = document.createElement('div');
+        t.className = 'toast'; t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+    }
+</script>
+</body>
+</html>
