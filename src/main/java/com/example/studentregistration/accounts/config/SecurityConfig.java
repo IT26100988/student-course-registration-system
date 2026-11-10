@@ -2,10 +2,8 @@ package com.example.studentregistration.accounts.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -19,34 +17,41 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        // Testing සඳහා Plain Text (No encryption)
+        return new PasswordEncoder() {
+            @Override
+            public String encode(CharSequence rawPassword) {
+                return rawPassword.toString();
+            }
+
+            @Override
+            public boolean matches(CharSequence rawPassword, String encodedPassword) {
+                return rawPassword.toString().equals(encodedPassword);
+            }
+        };
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // ⚠️ CSRF DISABLED for student project (avoids 403 on POST/PATCH)
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Static pages
                         .requestMatchers(
                                 "/", "/index.html",
                                 "/student/**", "/admin/**",
                                 "/css/**", "/js/**", "/favicon.ico",
                                 "/*.html", "/error"
                         ).permitAll()
-                        // Public auth endpoints
                         .requestMatchers(
                                 "/api/v1/auth/register",
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/csrf"
                         ).permitAll()
-                        // Admin-only
+                        // Admin API
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        // Student endpoints (session check is in controller)
-                        .requestMatchers("/api/v1/students/me/**").permitAll()
-                        // Anything else under /api/v1 needs authentication
+                        // Student API
+                        .requestMatchers("/api/v1/students/me/**").hasRole("STUDENT")
                         .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().permitAll()
                 )
@@ -61,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:8081"));
+        cfg.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8081"));
         cfg.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowCredentials(true);
