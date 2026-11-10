@@ -12,6 +12,7 @@ public class TxtCourseRepository implements CourseRepository {
 
     @Override
     public void addCourse(Course course) {
+        ensureDirectoryExists();
 
         try (BufferedWriter writer =
                      new BufferedWriter(
@@ -36,10 +37,16 @@ public class TxtCourseRepository implements CourseRepository {
     public List<Course> getAllCourses() {
 
         List<Course> courses = new ArrayList<>();
+        File file = new File(FILE_PATH);
+
+        // File එක තවම හැදිලා නැත්නම් Exception එකක් නොදී empty list එකක් return කරයි
+        if (!file.exists()) {
+            return courses;
+        }
 
         try (BufferedReader reader =
                      new BufferedReader(
-                             new FileReader(FILE_PATH))) {
+                             new FileReader(file))) {
 
             String line;
 
@@ -133,6 +140,8 @@ public class TxtCourseRepository implements CourseRepository {
     private void saveAllCourses(
             List<Course> courses) {
 
+        ensureDirectoryExists();
+
         try (
                 BufferedWriter writer =
                         new BufferedWriter(
@@ -154,6 +163,14 @@ public class TxtCourseRepository implements CourseRepository {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // data folder එක නැත්නම් auto create කරන method එක
+    private void ensureDirectoryExists() {
+        File file = new File(FILE_PATH);
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
         }
     }
 }
