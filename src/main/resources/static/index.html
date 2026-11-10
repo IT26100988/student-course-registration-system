@@ -131,6 +131,24 @@
         .nav-tag i {
             color: #a5b4fc;
         }
+        .portal-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .portal-links a {
+            padding: 8px 11px;
+            color: #ffffff;
+            background: #4f46e5;
+            border: 1px solid #ffffff44;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: .82rem;
+            font-weight: 700;
+        }
+
+        .portal-links a:hover { background: #3730a3; }
 
         .page {
             width: min(1280px, calc(100% - 40px));
@@ -777,6 +795,7 @@
 
         @media (max-width: 650px) {
             .nav-inner { min-height: 67px; padding: 10px 18px; }
+            .portal-links { width: 100%; justify-content: center; }
             .brand-logo { width: 42px; height: 42px; font-size: 20px; }
             .brand-name { font-size: 1.08rem; }
             .nav-tag { font-size: .74rem; }
@@ -805,7 +824,7 @@
 
 <nav class="navbar">
     <div class="nav-inner">
-        <a href="#" class="brand" aria-label="UniPortal home">
+        <a href="/" class="brand" aria-label="UniPortal home">
             <span class="brand-logo">
                 <i class="fa-solid fa-graduation-cap"></i>
             </span>
@@ -818,6 +837,10 @@
         <div class="nav-tag">
             <i class="fa-solid fa-shield-halved"></i>
             <span>Course Administration</span>
+        </div>
+        <div class="portal-links" aria-label="Scheduling pages">
+            <a href="/admin/lecturers.html">Admin pages</a>
+            <a href="/student/timetable.html">Student pages</a>
         </div>
     </div>
 </nav>
