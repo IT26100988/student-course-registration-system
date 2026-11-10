@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Student Course Registration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body>
+<div class="login-body">
+
+    <!-- LEFT: Purple gradient hero -->
+    <div class="login-hero">
+        <div class="logo">
+            <span class="logo-icon">🎓</span>
+            CourseReg
+        </div>
+        <h2>Welcome back to your learning journey.</h2>
+        <p>Register for courses, track enrollment, view results, and manage payments — all in one portal.</p>
+    </div>
+
+    <!-- RIGHT: Login form -->
+    <div class="login-form-side">
+        <div class="login-form-wrap">
+            <h1>Sign in</h1>
+            <p class="subtitle">Student or Admin — use the same form.</p>
+
+            <div id="msg" class="msg"></div>
+
+            <form onsubmit="onLogin(event)">
+                <div class="form-row">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="you@example.com" required autofocus>
+                </div>
+                <div class="form-row">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:14px;">Sign in</button>
+            </form>
+
+            <div class="top-links" style="text-align:center;">
+                Don't have an account? <a href="/student/register.html">Create one</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/js/accounts.js"></script>
+</body>
+</html>

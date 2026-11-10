@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile — CourseReg</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body onload="loadProfile()">
+<div style="height:6px; background: linear-gradient(90deg, #9333ea, #7c3aed, #581c87);"></div>
+
+<div class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h1 style="margin:0;">My Profile</h1>
+        <a href="#" class="btn btn-secondary" onclick="return logoutFirst(event)">Logout</a>
+    </div>
+
+    <div id="msg" class="msg"></div>
+
+    <div class="card" style="background: linear-gradient(135deg, #9333ea, #581c87); color:#fff; border:none;">
+        <div style="display:flex; align-items:center; gap:16px;">
+            <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:28px;">👤</div>
+            <div>
+                <div style="font-size:20px;font-weight:700;" id="profNameDisplay">—</div>
+                <div style="font-size:14px;opacity:0.9;" id="profEmailDisplay">—</div>
+                <div style="margin-top:6px;font-size:12px;">
+                    Student No: <strong id="profStudentNo">—</strong>
+                    &nbsp;|&nbsp; Status: <strong id="profStatus">—</strong>
+                </div>
+                <div style="font-size:11px;opacity:0.6;margin-top:4px;" id="profStudentId">—</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Edit profile</h2>
+        <form onsubmit="onUpdateProfile(event)">
+            <div class="form-row">
+                <label for="profFullName">Full Name</label>
+                <input type="text" id="profFullName" required>
+            </div>
+            <div class="form-row">
+                <label for="profEmail">Email</label>
+                <input type="email" id="profEmail" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Change password</h2>
+        <form onsubmit="onChangePassword(event)">
+            <div class="form-row">
+                <label for="pwdCurrent">Current Password</label>
+                <input type="password" id="pwdCurrent" required>
+            </div>
+            <div class="form-row">
+                <label for="pwdNew">New Password</label>
+                <input type="password" id="pwdNew" minlength="6" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Update password</button>
+        </form>
+    </div>
+</div>
+
+<script src="/js/accounts.js"></script>
+<script>
+    function logoutFirst(e) { e.preventDefault(); onLogout(); return false; }
+</script>
+</body>
+</html>
