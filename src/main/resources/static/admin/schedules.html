@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Management</title>
+
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/scheduling.js" defer></script>
+</head>
+<body>
+<main>
+    <h1>Schedule Management</h1>
+
+    <section>
+        <h2>Add or Update Schedule</h2>
+
+        <form id="schedule-form">
+            <input type="hidden" id="scheduleId">
+
+            <label for="offeringId">Offering ID</label>
+            <input type="text" id="offeringId" required>
+
+            <label for="lecturerId">Lecturer ID</label>
+            <input type="text" id="lecturerId" required>
+
+            <label for="dayOfWeek">Day</label>
+            <select id="dayOfWeek" required>
+                <option value="">Select a day</option>
+                <option value="MONDAY">Monday</option>
+                <option value="TUESDAY">Tuesday</option>
+                <option value="WEDNESDAY">Wednesday</option>
+                <option value="THURSDAY">Thursday</option>
+                <option value="FRIDAY">Friday</option>
+                <option value="SATURDAY">Saturday</option>
+                <option value="SUNDAY">Sunday</option>
+            </select>
+
+            <label for="startLocal">Start Time</label>
+            <input type="time" id="startLocal" required>
+
+            <label for="endLocal">End Time</label>
+            <input type="time" id="endLocal" required>
+
+            <label for="timeZone">Time Zone</label>
+            <input
+                    type="text"
+                    id="timeZone"
+                    value="Asia/Colombo"
+                    required
+            >
+
+            <label for="room">Room</label>
+            <input type="text" id="room" required>
+
+            <label for="scheduleStatus">Status</label>
+            <select id="scheduleStatus">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+            </select>
+
+            <button type="submit" id="saveScheduleButton">
+                Save Schedule
+            </button>
+            <button type="button" id="cancelScheduleButton">
+                Cancel Update
+            </button>
+        </form>
+
+        <p id="scheduleMessage" role="status"></p>
+    </section>
+
+    <section>
+        <h2>Schedules</h2>
+        <button type="button" id="refreshScheduleButton">
+            Refresh List
+        </button>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Offering</th>
+                <th>Lecturer</th>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="scheduleTableBody"></tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

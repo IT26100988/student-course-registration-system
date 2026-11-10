@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Timetable</title>
+
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/scheduling.js" defer></script>
+</head>
+<body>
+<main>
+    <h1>My Timetable</h1>
+
+    <p>Schedules for your active course registrations appear here.</p>
+
+    <button type="button" id="refreshStudentTimetableButton">
+        Refresh Timetable
+    </button>
+
+    <p id="studentTimetableMessage" role="status"></p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Offering ID</th>
+            <th>Day</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Lecturer ID</th>
+            <th>Room</th>
+        </tr>
+        </thead>
+        <tbody id="studentTimetableTableBody"></tbody>
+    </table>
+</main>
+</body>
+</html>

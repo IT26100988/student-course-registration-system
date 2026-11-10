@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prerequisite Management</title>
+
+    <link rel="stylesheet" href="../css/common.css">
+    <script src="../js/scheduling.js" defer></script>
+</head>
+<body>
+<main>
+    <h1>Prerequisite Management</h1>
+
+    <section>
+        <h2>Add or Update Prerequisite</h2>
+
+        <form id="prerequisite-form">
+            <input type="hidden" id="prerequisiteId">
+
+            <label for="courseId">Course ID</label>
+            <input type="text" id="courseId" required>
+
+            <label for="requiredCourseId">Required Course ID</label>
+            <input type="text" id="requiredCourseId" required>
+
+            <label for="prerequisiteStatus">Status</label>
+            <select id="prerequisiteStatus">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+            </select>
+
+            <button type="submit" id="savePrerequisiteButton">
+                Save Prerequisite
+            </button>
+            <button type="button" id="cancelPrerequisiteButton">
+                Cancel Update
+            </button>
+        </form>
+
+        <p id="prerequisiteMessage" role="status"></p>
+    </section>
+
+    <section>
+        <h2>Prerequisite Rules</h2>
+        <button type="button" id="refreshPrerequisiteButton">
+            Refresh List
+        </button>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Course ID</th>
+                <th>Required Course ID</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="prerequisiteTableBody"></tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
