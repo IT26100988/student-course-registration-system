@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students — Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/common.css">
+</head>
+<body onload="loadStudents()">
+<div style="height:6px; background: linear-gradient(90deg, #9333ea, #7c3aed, #581c87);"></div>
+
+<div class="container">
+    <div class="card">
+        <h1>Manage Students</h1>
+        <div id="msg" class="msg"></div>
+
+        <div style="display:flex; gap:10px; margin-bottom:12px;">
+            <input type="text" id="searchQuery" placeholder="Search by name, email, or studentNo..."
+                   style="flex:1; padding:10px 12px; border:1px solid #cdd3da; border-radius:8px;">
+            <button class="btn btn-primary" onclick="loadStudents()">Search</button>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Student No</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="studentsBody">
+            <tr><td colspan="5" style="text-align:center;color:#999;">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>Create Student</h2>
+        <form onsubmit="onCreateStudent(event)">
+            <div class="form-row">
+                <label for="newStudentNo">Student Number</label>
+                <input type="text" id="newStudentNo" placeholder="ST2026XXX" required>
+            </div>
+            <div class="form-row">
+                <label for="newFullName">Full Name</label>
+                <input type="text" id="newFullName" required>
+            </div>
+            <div class="form-row">
+                <label for="newEmail">Email</label>
+                <input type="email" id="newEmail" required>
+            </div>
+            <div class="form-row">
+                <label for="newPassword">Password</label>
+                <input type="password" id="newPassword" minlength="6" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Student</button>
+        </form>
+    </div>
+
+    <div class="actions" style="margin-top:20px;">
+        <a href="/student/login.html" class="btn btn-secondary" onclick="return logoutFirst(event)">Logout</a>
+    </div>
+</div>
+
+<script src="/js/accounts.js"></script>
+<script>
+    function logoutFirst(e) { e.preventDefault(); onLogout(); return false; }
+</script>
+</body>
+</html>

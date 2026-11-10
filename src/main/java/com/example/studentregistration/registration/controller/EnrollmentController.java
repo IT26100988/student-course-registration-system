@@ -95,4 +95,16 @@ public class EnrollmentController {
                 e.getClosedAt()
         );
     }
+    /** GET /api/v1/admin/enrollments */
+    @GetMapping("/api/v1/admin/enrollments")
+    public ResponseEntity<Map<String, Object>> allEnrollments(HttpSession session) {
+        // Only admin can see all (SecurityConfig handles hasRole("ADMIN"))
+        requireAdminId(session);
+
+        List<EnrollmentResponse> items = new ArrayList<>();
+        for (Enrollment e : enrollmentRepository.findAll()) {
+            items.add(toResponse(e));
+        }
+        return ResponseEntity.ok(Map.of("items", items, "total", items.size()));
+    }
 }
