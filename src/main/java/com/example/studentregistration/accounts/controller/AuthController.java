@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-/**
- * Public auth endpoints + current-user.
- * Base: /api/v1/auth
- */
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -37,24 +33,20 @@ public class AuthController {
         this.securityContextService = securityContextService;
     }
 
-    /** POST /api/v1/auth/register — public. */
     @PostMapping("/register")
     public ResponseEntity<StudentProfileResponse> register(@RequestBody RegisterStudentRequest request) {
         String hashed = authenticationService.hashPassword(request.password());
         Student created = studentService.register(
-                request.studentNo(),
-                request.fullName(),
-                request.email(),
-                hashed
+                request.studentNo(), request.fullName(), request.email(), hashed
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(toProfile(created));
     }
 
-    /** POST /api/v1/auth/login — public. Stores authenticated user in session. */
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request,
                                                      HttpServletRequest httpRequest) {
         User user = authenticationService.login(request.email(), request.password());
+        // 🔥 මේක තමයි වැදගත්ම කොටස. Session එක හදනවා.
         securityContextService.login(user, httpRequest);
 
         Map<String, Object> body = Map.of(
@@ -65,14 +57,12 @@ public class AuthController {
         return ResponseEntity.ok(body);
     }
 
-    /** POST /api/v1/auth/logout — invalidate session. */
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest httpRequest) {
         securityContextService.logout(httpRequest);
         return ResponseEntity.noContent().build();
     }
 
-    /** GET /api/v1/auth/me — current user from session. */
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> me() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -88,7 +78,6 @@ public class AuthController {
                 .map(a -> a.getAuthority().replace("ROLE_", ""))
                 .orElse("UNKNOWN");
 
-        // Try student first, then admin
         var student = studentService.findByEmail(email);
         if (student.isPresent()) {
             return ResponseEntity.ok(Map.of(
@@ -97,7 +86,6 @@ public class AuthController {
                     "fullName", student.get().getFullName()
             ));
         }
-        // If not a student, assume admin (AuthenticationService already validated)
         return ResponseEntity.ok(Map.of(
                 "userId", "ADM_" + email,
                 "role", role,
@@ -107,11 +95,7 @@ public class AuthController {
 
     private StudentProfileResponse toProfile(Student s) {
         return new StudentProfileResponse(
-                s.getId(),
-                s.getStudentNo(),
-                s.getFullName(),
-                s.getEmail(),
-                s.getStatus().name()
+                s.getId(), s.getStudentNo(), s.getFullName(), s.getEmail(), s.getStatus().name()
         );
     }
 }

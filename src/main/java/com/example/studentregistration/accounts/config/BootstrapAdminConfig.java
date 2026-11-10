@@ -13,18 +13,6 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.util.UUID;
 
-/**
- * One-time admin bootstrap. On startup, if no ACTIVE admin exists,
- * create one from env vars (or dev defaults).
- *
- * Env vars (recommended in real use):
- *   BOOTSTRAP_ADMIN_EMAIL
- *   BOOTSTRAP_ADMIN_PASSWORD
- *   BOOTSTRAP_ADMIN_NAME (optional)
- *
- * Dev defaults (if env not set): admin@example.com / admin12345
- * ⚠️ For the student project only — never use defaults in production.
- */
 @Component
 public class BootstrapAdminConfig implements CommandLineRunner {
 
@@ -49,10 +37,12 @@ public class BootstrapAdminConfig implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (adminRepository.existsAnyActiveAdmin()) {
-            log.info("Bootstrap admin skipped (already exists).");
-            return;
-        }
+        // මෙතන අපි check කරන්නේ නෑ. හැම වතාවකම අලුත් admin කෙනෙක් හදනවා (Test කරන්න).
+        // if (adminRepository.existsAnyActiveAdmin()) {
+        //     log.info("Bootstrap admin skipped (already exists).");
+        //     return;
+        // }
+
         Instant now = Instant.now();
         Admin admin = new Admin(
                 "ADM_" + UUID.randomUUID(),

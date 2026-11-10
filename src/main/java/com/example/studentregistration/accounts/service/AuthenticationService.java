@@ -13,10 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-/**
- * Login + password check + admin bootstrap guard.
- * Uses BCrypt PasswordEncoder to compare raw password against stored hash.
- */
 @Service
 public class AuthenticationService {
 
@@ -32,10 +28,6 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Authenticate email + raw password.
-     * Returns the matching User (Student or Admin). Throws if wrong or inactive.
-     */
     public User login(String email, String rawPassword) {
         if (email == null || email.isBlank() || rawPassword == null || rawPassword.isBlank()) {
             throw new InvalidCredentialsException("Email and password are required");
@@ -49,7 +41,8 @@ public class AuthenticationService {
             if (s.getStatus() != AccountStatus.ACTIVE) {
                 throw new InvalidCredentialsException("Account is inactive");
             }
-            if (!passwordEncoder.matches(rawPassword, s.getPasswordHash())) {
+            // 🔥 Plain text check (Testing සඳහා)
+            if (!rawPassword.equals(s.getPasswordHash())) {
                 throw new InvalidCredentialsException("Wrong email or password");
             }
             return s;
@@ -62,7 +55,8 @@ public class AuthenticationService {
             if (a.getStatus() != AccountStatus.ACTIVE) {
                 throw new InvalidCredentialsException("Account is inactive");
             }
-            if (!passwordEncoder.matches(rawPassword, a.getPasswordHash())) {
+            // 🔥 Plain text check (Testing සඳහා)
+            if (!rawPassword.equals(a.getPasswordHash())) {
                 throw new InvalidCredentialsException("Wrong email or password");
             }
             return a;
@@ -71,19 +65,16 @@ public class AuthenticationService {
         throw new InvalidCredentialsException("Wrong email or password");
     }
 
-    /** Password hashing helper — controller calls this before storing a new password. */
+    /** 🔥 දැන් අපි encrypt කරන්නේ නෑ (Testing සඳහා) */
     public String hashPassword(String rawPassword) {
-        return passwordEncoder.encode(rawPassword);
+        return rawPassword;
     }
 
-    /** Used for the one-time admin bootstrap: true if no ACTIVE admin exists yet. */
     public boolean needsBootstrapAdmin() {
         return !adminRepository.existsAnyActiveAdmin();
     }
 
-    /** Role helper for session/cookie purposes. */
     public UserRole roleOf(User user) {
         return user.getRole();
     }
-    //updte
 }
