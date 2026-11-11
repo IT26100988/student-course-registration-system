@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Registration Queue</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <style>
+        .status-PENDING { color: #f59e0b; font-weight: bold; }
+        .status-APPROVED { color: #10b981; font-weight: bold; }
+        .status-REJECTED { color: #ef4444; font-weight: bold; }
+        .queue-box { background: var(--purple-50); border: 1.5px solid var(--purple-200); padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .top-links { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-links" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <a href="/index.html">← Home</a> |
+            <a href="/admin/enrollments.html">Manage Enrollments</a> |
+            <a href="/student/registrations.html">Student View</a>
+        </div>
+        <div style="font-weight: 600; color: var(--purple-700);">
+            Logged in as: <span id="adminNameDisplay">Admin</span>
+        </div>
+    </div>
+
+    <h1>Admin Registration Queue</h1>
+
+    <div class="card">
+        <h2>Process Next FIFO Request</h2>
+        <p style="color: var(--gray-500); margin-bottom: 15px;">Decide on the oldest PENDING request in the queue.</p>
+
+        <div class="queue-box" id="nextRequestDisplay">
+            No pending requests in queue.
+        </div>
+
+        <div class="form-row">
+            <label for="reasonInput">Reason (Required for Reject)</label>
+            <input type="text" id="reasonInput" placeholder="e.g. Prerequisites not met, or Approved by Admin" />
+        </div>
+
+        <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="isPaidCheckbox" style="width: 18px; height: 18px;">
+                Is Paid Offering?
+            </label>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="processDecision('APPROVE')" style="background: linear-gradient(135deg, #10b981, #047857);">Approve Next</button>
+            <button class="btn btn-secondary" onclick="processDecision('REJECT')" style="background: #fef2f2; color: #991b1b; border-color: #fecaca;">Reject Next</button>
+        </div>
+
+        <div id="message" class="msg msg-ok"></div>
+        <div id="error" class="msg msg-err"></div>
+    </div>
+
+    <div class="card">
+        <h2>All Requests History</h2>
+        <button class="btn btn-secondary" onclick="loadAdminRequests()" style="margin-bottom: 15px;">Refresh</button>
+        <table>
+            <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Student ID</th>
+                <th>Offering ID</th>
+                <th>Seq</th>
+                <th>Status</th>
+                <th>Requested At</th>
+            </tr>
+            </thead>
+            <tbody id="requestTableBody">
+            <tr><td colspan="6">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

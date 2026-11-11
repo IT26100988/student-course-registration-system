@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin | Enrollments</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <style>
+        .status-PENDING_PAYMENT { color: #f59e0b; font-weight: bold; }
+        .status-ACTIVE { color: #10b981; font-weight: bold; }
+        .status-WITHDRAWN { color: #6b7280; font-weight: bold; }
+        .status-CANCELLED { color: #ef4444; font-weight: bold; }
+        .top-links { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-links" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <a href="/index.html">← Home</a> |
+            <a href="/admin/registration-queue.html">Registration Queue</a> |
+            <a href="/student/registrations.html">Student View</a>
+        </div>
+        <div style="font-weight: 600; color: var(--purple-700);">
+            Logged in as: <span id="adminNameDisplay">Admin</span>
+        </div>
+    </div>
+
+    <h1>Admin Enrollment Management</h1>
+
+    <div class="card">
+        <h2>All Enrollments</h2>
+        <button class="btn btn-secondary" onclick="loadAllEnrollments()" style="margin-bottom: 15px;">Refresh</button>
+        <table>
+            <thead>
+            <tr>
+                <th>Enrollment ID</th>
+                <th>Request ID</th>
+                <th>Student ID</th>
+                <th>Offering ID</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="enrollmentTableBody">
+            <tr><td colspan="6">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>
