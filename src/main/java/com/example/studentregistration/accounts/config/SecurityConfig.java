@@ -16,11 +16,9 @@ import java.util.List;
 
 /**
  * Spring Security config for the student project.
- * - Public: register, login, csrf
+ * - Public: register, login, csrf, courses api
  * - ADMIN only: /api/v1/admin/**
  * - Authenticated: everything else under /api/v1
- * - CSRF enabled (cookie token via /api/v1/auth/csrf)
- * - Stateless? No — we use session cookie (JSESSIONID).
  */
 @Configuration
 public class SecurityConfig {
@@ -37,7 +35,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers(
                                 "/api/v1/auth/register",
-                                "/api/v1/auth/login"
+                                "/api/v1/auth/login",
+                                "/api/courses/**" // <--- Course API සඳහා CSRF ඉවත් කිරීම
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
@@ -54,6 +53,8 @@ public class SecurityConfig {
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/csrf"
                         ).permitAll()
+                        // Course management API endpoints (දැනට testing සඳහා permitAll කිරීම)
+                        .requestMatchers("/api/courses/**").permitAll()
                         // Admin-only
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         // Student-only (own data)
@@ -63,9 +64,9 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                .formLogin(form -> form.disable())     // no HTML login page
-                .httpBasic(basic -> basic.disable())   // no Basic auth
-                .logout(logout -> logout.disable());   // we handle logout in controller
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable())
+                .logout(logout -> logout.disable());
 
         return http.build();
     }
