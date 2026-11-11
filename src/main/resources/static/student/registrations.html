@@ -3,87 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <title>My Registrations | Student</title>
+    <link rel="stylesheet" href="/css/common.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background: #f4f7f6; color: #333; }
-        h1, h2 { color: #2c3e50; }
-        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        input { padding: 10px; margin-right: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        button { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #2980b9; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background: #34495e; color: white; }
-        .status-PENDING { color: #f39c12; font-weight: bold; }
-        .status-APPROVED { color: #27ae60; font-weight: bold; }
-        .status-REJECTED, .status-CANCELLED { color: #e74c3c; font-weight: bold; }
-        .status-ACTIVE { color: #27ae60; font-weight: bold; }
-        .status-WITHDRAWN { color: #7f8c8d; font-weight: bold; }
-        #message { margin-top: 15px; color: #27ae60; font-weight: bold; }
-        #error { margin-top: 15px; color: #e74c3c; font-weight: bold; }
+        .status-PENDING { color: #f59e0b; font-weight: bold; }
+        .status-APPROVED { color: #10b981; font-weight: bold; }
+        .status-REJECTED, .status-CANCELLED { color: #ef4444; font-weight: bold; }
+        .status-ACTIVE { color: #10b981; font-weight: bold; }
+        .status-WITHDRAWN { color: #6b7280; font-weight: bold; }
+        .top-links { margin-bottom: 20px; }
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; }
     </style>
 </head>
 <body>
+<div class="container">
+    <div class="top-links" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <a href="/index.html">← Home</a> |
+            <a href="/admin/registration-queue.html">Admin Queue</a>
+        </div>
+        <div style="font-weight: 600; color: var(--purple-700);">
+            Logged in as: <span id="studentNameDisplay">Loading...</span>
+        </div>
+    </div>
 
+    <h1>Student Registration Dashboard</h1>
 
-<h1>Student Registration Dashboard</h1>
+    <div class="card">
+        <h2>Submit New Request</h2>
+        <div class="form-row">
+            <label for="offeringIdInput">Offering ID</label>
+            <input type="text" id="offeringIdInput" placeholder="Enter Offering ID (e.g. OFF_...)" />
+        </div>
+        <button class="btn btn-primary" onclick="submitRequest()">Submit Request</button>
 
-<p style="font-size: 18px; color: #2c3e50; font-weight: bold;">
-    Logged in as: <span id="studentNameDisplay">Loading...</span>
-</p>
+        <div id="message" class="msg msg-ok"></div>
+        <div id="error" class="msg msg-err"></div>
+    </div>
 
-<div class="card">
-    <h2>Submit New Request</h2>
-    <input type="text" id="offeringIdInput" placeholder="Enter Offering ID (e.g. OFF_...)" style="width: 300px;">
-    <button onclick="submitRequest()">Submit Request</button>
-    <div id="message"></div>
-    <div id="error"></div>
+    <div class="card">
+        <h2>My Request History</h2>
+        <button class="btn btn-secondary" onclick="loadMyRequests()" style="margin-bottom: 15px;">Refresh</button>
+        <table>
+            <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Offering ID</th>
+                <th>Seq</th>
+                <th>Status</th>
+                <th>Requested At</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="requestTableBody">
+            <tr><td colspan="6">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>My Active Enrollments</h2>
+        <button class="btn btn-secondary" onclick="loadMyEnrollments()" style="margin-bottom: 15px;">Refresh</button>
+        <table>
+            <thead>
+            <tr>
+                <th>Enrollment ID</th>
+                <th>Offering ID</th>
+                <th>Status</th>
+                <th>Created At</th>
+            </tr>
+            </thead>
+            <tbody id="enrollmentTableBody">
+            <tr><td colspan="4">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<div class="card">
-    <h2>My Request History</h2>
-    <button onclick="loadMyRequests()" style="background:#95a5a6;">Refresh</button>
-    <table>
-        <thead>
-        <tr>
-            <th>Request ID</th>
-            <th>Offering ID</th>
-            <th>Sequence</th>
-            <th>Status</th>
-            <th>Requested At</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody id="requestTableBody">
-        <tr><td colspan='6'>Loading...</td></tr>
-        </tbody>
-    </table>
-</div>
-
-<div class="card">
-    <h2>My Active Enrollments</h2>
-    <button onclick="loadMyEnrollments()" style="background:#95a5a6;">Refresh</button>
-    <table>
-        <thead>
-        <tr>
-            <th>Enrollment ID</th>
-            <th>Offering ID</th>
-            <th>Status</th>
-            <th>Created At</th>
-        </tr>
-        </thead>
-        <tbody id="enrollmentTableBody">
-        <tr><td colspan='4'>Loading...</td></tr>
-        </tbody>
-    </table>
-</div>
-
-<!-- JS -->
 <script src="/js/registration.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        loadMyRequests();
-        loadMyEnrollments();
-    });
-</script>
 </body>
 </html>
