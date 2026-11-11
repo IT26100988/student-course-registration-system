@@ -1,29 +1,5 @@
 // admin.js — M4 Admin Frontend Logic
 
-// ================= LOGIN (For Testing UI) =================
-
-async function doAdminLogin() {
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
-
-    try {
-        const response = await fetch("/api/v1/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, password: password })
-        });
-
-        if (!response.ok) throw new Error("Login failed. Check credentials.");
-
-        document.getElementById("loginSection").style.display = "none";
-
-        // Reload data
-        loadAdminRequests();
-
-    } catch (error) {
-        alert("Login Error: " + error.message);
-    }
-}
 
 // ================= ADMIN QUEUE FUNCTIONS =================
 

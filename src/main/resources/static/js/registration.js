@@ -1,31 +1,31 @@
 // registration.js — M4 Frontend Logic
 
-// ================= LOGIN (For Testing UI) =================
+// ================= INITIAL LOAD (Page Load වෙද්දී වැඩ කරන්න) =================
 
-async function doLogin() {
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
+document.addEventListener("DOMContentLoaded", () => {
 
-    try {
-        const response = await fetch("/api/v1/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, password: password })
+    // 1. M1 ගේ /auth/me එකෙන් ඔයාගේ නම ගන්න
+    fetch("/api/v1/auth/me")
+        .then(res => {
+            if (!res.ok) throw new Error("Not logged in");
+            return res.json();
+        })
+        .then(data => {
+            const nameDisplay = document.getElementById("studentNameDisplay");
+            if (nameDisplay && data.fullName) {
+                nameDisplay.innerText = data.fullName + " (" + data.userId + ")";
+            }
+        })
+        .catch(err => {
+            const nameDisplay = document.getElementById("studentNameDisplay");
+            if (nameDisplay) nameDisplay.innerText = "Not logged in (Please login from M1)";
         });
 
-        if (!response.ok) throw new Error("Login failed. Check credentials.");
-
-        // Hide login section after success
-        document.getElementById("loginSection").style.display = "none";
-
-        // Reload data
-        loadMyRequests();
-        loadMyEnrollments();
-
-    } catch (error) {
-        alert("Login Error: " + error.message);
-    }
-}
+    // 2. Tables වල Data load කරන්න (මේක කලින් තිබ්බා නම් ආයෙත් දාන්න ඕන නෑ)
+    // ඔයාගේ File එකේ loadMyRequests() සහ loadMyEnrollments() කියන functions දෙක තියෙනවා නම් මේක වැඩ කරයි.
+    if (typeof loadMyRequests === "function") loadMyRequests();
+    if (typeof loadMyEnrollments === "function") loadMyEnrollments();
+});
 
 // ================= STUDENT FUNCTIONS =================
 

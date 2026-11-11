@@ -117,24 +117,20 @@ public class StudentRegistrationController {
     // ---------- helpers ----------
 
     private static String requireStudentId(HttpSession session) {
-
         if (session == null) {
-            throw new IllegalStateException(
-                    "No active session");
+            throw new IllegalStateException("No active session");
         }
 
         Object value = session.getAttribute("AUTHENTICATED_USER_ID");
 
         if (value == null || value.toString().isBlank()) {
-            throw new IllegalStateException(
-                    "Not authenticated");
+            throw new IllegalStateException("Not authenticated");
         }
 
         Object role = session.getAttribute("AUTHENTICATED_USER_ROLE");
 
         if (role != null && !"STUDENT".equals(role.toString())) {
-            throw new IllegalStateException(
-                    "Only students can access this endpoint");
+            throw new IllegalStateException("Only students can access this endpoint");
         }
 
         return value.toString();
